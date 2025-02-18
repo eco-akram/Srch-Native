@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { House, Info, List } from 'lucide-react-native';
+import { StatusBar } from 'expo-status-bar';
 
 export default function TabLayout() {
   return (
@@ -44,6 +45,7 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
+      <StatusBar style="light" />
     </>
   );
 }
