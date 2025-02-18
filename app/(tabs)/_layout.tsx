@@ -16,9 +16,6 @@ export default function TabLayout() {
             /*             borderTopColor: '#141414', */
             height: 60,
           },
-          /*           sceneStyle: {
-            backgroundColor: '#0A0A0A',
-          }, */
         }}>
         <Tabs.Screen
           name="details"
