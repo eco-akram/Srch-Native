@@ -5,28 +5,26 @@ export default function TabLayout() {
   return (
     <>
       <Tabs
-        screenOptions={
-          {
-            /*           tabBarActiveTintColor: '#FFFFFF',
+        screenOptions={{
+          /*           tabBarActiveTintColor: '#FFFFFF',
           tabBarInactiveTintColor: '#777777', */
-            /*           tabBarShowLabel: false,
+          /*           tabBarShowLabel: false, */
           tabBarStyle: {
-            backgroundColor: '#000000',
+            /*             backgroundColor: '#000000', */
             borderTopWidth: 0.5,
-            borderTopColor: '#141414',
-            height: 110,
-          }, */
-            /*           sceneStyle: {
+            /*             borderTopColor: '#141414', */
+            height: 60,
+          },
+          /*           sceneStyle: {
             backgroundColor: '#0A0A0A',
           }, */
-          }
-        }>
+        }}>
         <Tabs.Screen
           name="details"
           options={{
-            title: 'Ai',
+            title: 'Details',
             headerShown: false,
-            tabBarIcon: ({ color }) => <Info size={24} />,
+            tabBarIcon: ({ color }) => <Info size={24} color={color} />,
           }}
         />
         <Tabs.Screen
@@ -34,15 +32,15 @@ export default function TabLayout() {
           options={{
             title: 'Home',
             headerShown: false,
-            tabBarIcon: ({ color }) => <House size={24} />,
+            tabBarIcon: ({ color }) => <House size={24} color={color} />,
           }}
         />
         <Tabs.Screen
           name="list"
           options={{
-            title: 'Decks',
+            title: 'List',
             headerShown: false,
-            tabBarIcon: ({ color }) => <List size={24} />,
+            tabBarIcon: ({ color }) => <List size={24} color={color} />,
           }}
         />
       </Tabs>
