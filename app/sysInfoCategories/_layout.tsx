@@ -1,5 +1,3 @@
-import '../global.css';
-import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { Stack } from "expo-router";
 import { View, StyleSheet } from "react-native";
@@ -9,8 +7,11 @@ const Layout = () => {
     <GluestackUIProvider mode="light">
       <View style={styles.container}>
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="jungInfo" />
+          <Stack.Screen name="sysInfo" />
+          <Stack.Screen name="eNET" />
+          <Stack.Screen name="jung" />
+          <Stack.Screen name="knx" />
+          <Stack.Screen name="lb-Manage" />
         </Stack>
       </View>
     </GluestackUIProvider>
