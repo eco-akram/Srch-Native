@@ -4,6 +4,12 @@
     "slug": "srch-native",
     "version": "1.0.0",
     "scheme": "srch-native",
+    "newArchEnabled": true,
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "web": {
       "bundler": "metro",
       "output": "static",
