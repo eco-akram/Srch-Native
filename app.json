@@ -44,6 +44,8 @@
       "package": "com.akrokk.srchnative"
     },
     "extra": {
+      "supabaseUrl": "https://fvmrhttkloyrybjylzxx.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2bXJodHRrbG95cnlianlsenh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MzM3MDIsImV4cCI6MjA1NTMwOTcwMn0.RL578ObVqjGz67vKAC5i9rnRyAPyzGg02_Csofkz-rs",
       "router": {
         "origin": false
       },
