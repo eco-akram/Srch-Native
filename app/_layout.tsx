@@ -8,7 +8,7 @@ const Layout = () => {
     <GluestackUIProvider mode="light">
       <Stack>
         <Stack.Screen name='index' options={{ headerShown: false }} />
-        <Stack.Screen name='details' options={{ headerShown: false }} />
+        <Stack.Screen name='sysInfo' options={{ headerShown: false }} />
       </Stack>
     </GluestackUIProvider>
   );
