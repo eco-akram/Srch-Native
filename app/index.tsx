@@ -5,9 +5,6 @@ import { Text } from "@/components/ui/text";
 import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
-import { Pressable } from "@/components/ui/pressable";
-import { Icon } from "@/components/ui/icon";
-import { Globe } from "lucide-react-native";
 import { router } from "expo-router";
 import LanguageModal from "@/components/LanguageModal";
 
@@ -42,7 +39,7 @@ const HomeScreen = () => {
             <Button className="bg-white rounded-3xl mt-3" variant="outline" size="lg" onPress={() => router.push('/sysInfoCategories/sysInfo')}>
               <Text className="color-black" size={"3xl"}>Sistemų informacija</Text>
             </Button>
-            <Button className="bg-white rounded-3xl mt-3" variant="outline" size="lg">
+            <Button className="bg-white rounded-3xl mt-3" variant="outline" size="lg" onPress={() => router.push('/questionnaire/categories')}>
               <Text className="color-black" size={"3xl"}>Atraskite sprendimą</Text>
             </Button>
             <Button className="bg-white rounded-3xl mt-3" variant="outline" size="lg" onPress={() => router.push('/jungInfo')}>
