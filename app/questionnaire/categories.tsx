@@ -27,7 +27,14 @@ const categoriesScreen = () => {
       { id: 2, name: 'Žaliuzės / Langinės / Tentai', description: 'Langų uždengimo sprendimai.' },
       { id: 3, name: 'Apsauga', description: 'Namų saugumo sprendimai.' },
       { id: 4, name: 'Vertės rodymas', description: 'Duomenų vizualizacija ir analizė.' },
-      { id: 5, name: 'Jungiklių laikmačiai', description: 'Automatizuoti jungikliai.' }
+      { id: 5, name: 'Jungiklių laikmačiai', description: 'Automatizuoti jungikliai.' },
+      { id: 6, name: 'Vartotojo Valdymas', description: 'Automatizuoti jungikliai.' },
+      { id: 7, name: 'Vartotojo konfigūravimo galimybės', description: 'Automatizuoti jungikliai.' },
+      { id: 8, name: 'Būvimo namie imitacija', description: 'Automatizuoti jungikliai.' },
+      { id: 9, name: 'Perjungimas', description: 'Automatizuoti jungikliai.' },
+      { id: 10, name: 'Pritemdymas', description: 'Automatizuoti jungikliai.' },
+      { id: 11, name: 'Spalvų atspalviai', description: 'Automatizuoti jungikliai.' },
+      { id: 12, name: 'Signalizacija', description: 'Automatizuoti jungikliai.' },
     ];
     setCategories(fetchedCategories);
     
@@ -81,51 +88,75 @@ const categoriesScreen = () => {
         style={{ width: 120, height: 30, marginVertical: 25, alignSelf: 'center' }}
       />
       
-        <Text size="3xl" style={{ color: 'black', alignSelf: 'center', marginVertical: 20 }}>Pasirinkite kategorijas</Text>
+        <Text size="3xl" style={{ color: 'black', alignSelf: 'center', marginVertical: 20, fontWeight: 'bold' }}>Pasirinkite kategorijas</Text>
       
       
       {/* Category List */}
       <FlatList
-        data={categories}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => {
-          const borderColor = borderAnimations[item.id]?.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['#D3D3D3', '#1EB20A']
-          });
-          
-          return (
-            <Animated.View
-              style={{
-                borderWidth: 2,
-                borderRadius: 10,
-                borderColor: borderColor || '#D3D3D3',
-                marginBottom: 10,
-              }}
-            >
-              <Pressable
-                className="rounded-xl bg-white p-4 shadow-md"
-                onPress={() => toggleSelection(item.id)}
-              >
-                <HStack className="justify-between items-center">
-                  <Text size="xl" style={{ color: 'black', fontWeight: 'bold' }}>{item.name}</Text>
-                  <Pressable hitSlop={20} onPress={() => toggleExpand(item.id)}>
-                    <Icon as={ChevronDown} size={'lg'} color="black" />
-                  </Pressable>
-                </HStack>
-              </Pressable>
-              {expandedCategory === item.id && (
-                <Box className="p-4 bg-gray-100 rounded-b-xl">
-                  <Text size="md" style={{ color: 'black', alignSelf: "center" }}>{item.description}</Text>
-                </Box>
-              )}
-            </Animated.View>
-          );
-        }}
-      />
+  data={categories}
+  keyExtractor={(item) => item.id.toString()}
+  renderItem={({ item }) => {
+    const borderColor = borderAnimations[item.id]?.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['#D3D3D3', '#1EB20A']
+    });
+
+    const isSelected = selectedCategories.has(item.id);
+
+    return (
+      <Animated.View
+      style={{
+        borderWidth: 2,
+        borderRadius: 18,
+        borderColor: borderColor || '#D3D3D3',
+        marginBottom: 12,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 1, height: 5 }, // Tiny shadow below
+        shadowOpacity: 0.5, // Very subtle
+        shadowRadius: 3, // Small blur for smooth effect
+        elevation: 3, // Minimal elevation for Android
+      }}
+    >
+    
+
+        <Pressable
+          className="bg-white p-4"
+          onPress={() => toggleSelection(item.id)}
+          style={{
+            borderTopLeftRadius: 18,
+            borderTopRightRadius: 18,
+            borderBottomLeftRadius: expandedCategory === item.id ? 0 : 18,
+            borderBottomRightRadius: expandedCategory === item.id ? 0 : 18,
+          }}
+        >
+          <HStack className="justify-between items-center">
+            <Image
+              source={isSelected ? require('../../assets/check-circle.png') : require('../../assets/x-circle.png')}
+              style={{ width: 22, height: 22, marginRight: 10 }}
+            />
+            <Text size="xl" style={{ color: 'black', fontWeight: 'bold' }}>{item.name}</Text>
+            <Pressable hitSlop={20} onPress={() => toggleExpand(item.id)}>
+              <Icon as={ChevronDown} size={'lg'} color="black" />
+            </Pressable>
+          </HStack>
+        </Pressable>
+        {expandedCategory === item.id && (
+          <Box className="p-4 bg-white"
+          style={{
+            borderBottomLeftRadius: 18,
+            borderBottomRightRadius: 18,
+          }}>
+            <Text size="md" style={{color: 'black', alignSelf: "center" }}>{item.description}</Text>
+          </Box>
+        )}
+      </Animated.View>
+    );
+  }}
+/>
       
       {/* Next Button */}
-      <Button className="mt-4 border-radius-3xl" onPress={() => router.push('/')}>
+      <Button className="mt-4" style={{ borderRadius: 24 }} onPress={() => router.push('/')}>
         <Text size="md" style={{ color: 'white', fontWeight:"bold"}}>Toliau</Text>
       </Button>
     </Box>

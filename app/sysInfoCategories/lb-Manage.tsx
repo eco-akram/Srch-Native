@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
-
 import { Pressable } from '@/components/ui/pressable';
 import { Icon } from '@/components/ui/icon';
 import { ArrowLeft } from 'lucide-react-native';
