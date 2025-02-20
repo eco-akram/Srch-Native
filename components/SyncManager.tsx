@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { syncDataIfOnline } from "@/hooks/useSync";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,7 +14,11 @@ const NetworkContext = createContext<{ isOnline: boolean }>({ isOnline: true });
 
 const tablesToSync = ["users"]; // ✅ Add more tables as needed
 
-export default function SyncManager({ children }: { children: React.ReactNode }) {
+export default function SyncManager({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const queryClient = useQueryClient();
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const netInfoRef = useRef<(() => void) | null>(null); // ✅ Prevent duplicate event listeners

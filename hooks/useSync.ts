@@ -8,7 +8,6 @@ const STORAGE_KEY = "cached_data";
 
 // ✅ Fetch data from Supabase and store in AsyncStorage
 const fetchFromSupabase = async (table: string) => {
-
   const { data, error } = await supabase.from(table).select("*");
 
   if (error) {
@@ -17,20 +16,18 @@ const fetchFromSupabase = async (table: string) => {
   }
 
   await AsyncStorage.setItem(`${STORAGE_KEY}_${table}`, JSON.stringify(data));
- 
+
   return data;
 };
 
 // ✅ Fetch from AsyncStorage when offline
 const fetchFromAsyncStorage = async (table: string) => {
-
   const storedData = await AsyncStorage.getItem(`${STORAGE_KEY}_${table}`);
   return storedData ? JSON.parse(storedData) : [];
 };
 
 // ✅ Sync Supabase data to AsyncStorage when online
 export async function syncDataIfOnline(table: string, queryClient: any) {
-  
   try {
     const { data, error } = await supabase.from(table).select("*");
     if (error) {
@@ -39,7 +36,6 @@ export async function syncDataIfOnline(table: string, queryClient: any) {
     }
 
     await AsyncStorage.setItem(`${STORAGE_KEY}_${table}`, JSON.stringify(data));
- 
 
     // ✅ IMMEDIATELY UPDATE UI WITHOUT UNNECESSARY FETCHES
     queryClient.setQueryData([table], data);
@@ -68,14 +64,12 @@ export function useSync(table: string) {
       setIsOnline(online);
 
       if (online) {
-      
         await syncDataIfOnline(table, queryClient);
       }
     });
 
     return () => {
       if (netInfoRef.current) {
-        
         netInfoRef.current(); // ✅ Unsubscribe the listener
         netInfoRef.current = null; // ✅ Prevent re-adding it
       }
