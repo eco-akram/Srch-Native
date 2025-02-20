@@ -135,7 +135,9 @@ const categoriesScreen = () => {
               source={isSelected ? require('../../assets/check-circle.png') : require('../../assets/x-circle.png')}
               style={{ width: 22, height: 22, marginRight: 10 }}
             />
-            <Text size="xl" style={{ color: 'black', fontWeight: 'bold' }}>{item.name}</Text>
+           <Text size="xl" style={{ color: 'black', fontWeight: 'bold', flex: 1, flexShrink: 1 }}>
+              {item.name}
+            </Text>
             <Pressable hitSlop={20} onPress={() => toggleExpand(item.id)}>
               <Icon as={ChevronDown} size={'lg'} color="black" />
             </Pressable>
