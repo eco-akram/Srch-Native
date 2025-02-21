@@ -192,6 +192,12 @@ module.exports = {
         'soft-3': '0px 0px 30px rgba(38, 38, 38, 0.1)',
         'soft-4': '0px 0px 40px rgba(38, 38, 38, 0.1)',
       },
+        primaryBg: 'FFFFFF', // white
+        secondaryBg: 'EAEAEA', // gray
+        accent: '017AFF', // blue
+        main: '18181B', // black
+        mainText: '000000', // white
+        secondaryText: '919198', // gray
     },
   },
   plugins: [gluestackPlugin],
