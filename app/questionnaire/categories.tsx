@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar, Image, FlatList, Animated } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
-import { VStack } from '@/components/ui/vstack';
 import { Pressable } from '@/components/ui/pressable';
 import { Icon } from '@/components/ui/icon';
 import { ArrowLeft, ChevronDown } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useCategories } from './CategoriesContext';
 
-const categoriesScreen = () => {
-  const [categories, setCategories] = useState<{ id: number; name: string; description: string; }[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState(new Set());
+const CategoriesScreen = () => {
+  const { categories, setCategories, selectedCategories, setSelectedCategories } = useCategories();
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
   const [borderAnimations, setBorderAnimations] = useState<{ [key: number]: Animated.Value }>({});
 
@@ -109,7 +108,7 @@ const categoriesScreen = () => {
         borderWidth: 2,
         borderRadius: 18,
         borderColor: borderColor || '#D3D3D3',
-        marginBottom: 12,
+        marginBottom: 10,
         backgroundColor: 'white',
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 5 }, // Tiny shadow below
@@ -135,7 +134,7 @@ const categoriesScreen = () => {
               source={isSelected ? require('../../assets/check-circle.png') : require('../../assets/x-circle.png')}
               style={{ width: 22, height: 22, marginRight: 10 }}
             />
-           <Text size="xl" style={{ color: 'black', fontWeight: 'bold', flex: 1, flexShrink: 1 }}>
+            <Text size="xl" style={{ color: 'black', fontWeight: 'bold', flex: 1, flexShrink: 1 }}>
               {item.name}
             </Text>
             <Pressable hitSlop={20} onPress={() => toggleExpand(item.id)}>
@@ -158,11 +157,11 @@ const categoriesScreen = () => {
 />
       
       {/* Next Button */}
-      <Button className="mt-4" style={{ borderRadius: 24 }} onPress={() => router.push('/')}>
+      <Button className="mt-4" style={{ borderRadius: 24 }} onPress={() => router.push('/questionnaire/questions')}>
         <Text size="md" style={{ color: 'white', fontWeight:"bold"}}>Toliau</Text>
       </Button>
     </Box>
   );
 };
 
-export default categoriesScreen;
+export default CategoriesScreen;
