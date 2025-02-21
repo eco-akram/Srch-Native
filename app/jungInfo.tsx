@@ -1,10 +1,8 @@
 import React from 'react';
 import { StatusBar, Image, View } from 'react-native';
-import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
-import { VStack } from '@/components/ui/vstack';
 import { Pressable } from '@/components/ui/pressable';
 import { Icon } from '@/components/ui/icon';
 import { ArrowLeft } from 'lucide-react-native';

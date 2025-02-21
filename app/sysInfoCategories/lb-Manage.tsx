@@ -1,6 +1,5 @@
 import React from 'react';
 import { StatusBar, Image, View } from 'react-native';
-import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
