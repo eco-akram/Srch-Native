@@ -9,7 +9,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/JUNG.png"
     },
     "plugins": [
       "expo-router",
@@ -25,12 +25,12 @@
       "tsconfigPaths": true
     },
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/JUNG.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/JUNG.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F1EBE5"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -38,8 +38,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/JUNG.png",
+        "backgroundColor": "#F1EBE5"
       },
       "package": "com.akrokk.srchnative"
     },
