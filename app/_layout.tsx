@@ -1,19 +1,27 @@
-import '../global.css';
 import "@/global.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { Stack } from "expo-router";
+import React from "react";
 import { View, StyleSheet } from "react-native";
+import SyncManager from "@/components/SyncManager";
+
+// ✅ Create QueryClient instance
+const queryClient = new QueryClient();
 
 const Layout = () => {
   return (
-    <GluestackUIProvider mode="light">
-      <View style={styles.container}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="jungInfo" />
-        </Stack>
-      </View>
-    </GluestackUIProvider>
+    // ✅ Wrap the entire app in QueryClientProvider
+    <QueryClientProvider client={queryClient}>
+      <SyncManager>
+        <GluestackUIProvider mode="light">
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="sysInfo" options={{ headerShown: false }} />
+          </Stack>
+        </GluestackUIProvider>
+      </SyncManager>
+    </QueryClientProvider>
   );
 };
 
