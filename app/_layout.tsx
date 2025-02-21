@@ -1,10 +1,11 @@
 import "@/global.css";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { Stack } from "expo-router";
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import SyncManager from "@/components/SyncManager";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 
 // ✅ Create QueryClient instance
 const queryClient = new QueryClient();
