@@ -1,14 +1,15 @@
+import { router } from "expo-router";
+import { Menu } from "lucide-react-native";
 import React from "react";
 import { StatusBar, Image, View } from "react-native";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+
 import { Box } from "@/components/ui/box";
+import { Button } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
-import { VStack } from "@/components/ui/vstack";
-import { Pressable } from "@/components/ui/pressable";
 import { Icon } from "@/components/ui/icon";
-import { Menu } from "lucide-react-native";
-import { router } from "expo-router";
+import { Pressable } from "@/components/ui/pressable";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
 
 // Import the logo image
 // Ensure this path is correct
@@ -21,11 +22,11 @@ const HomeScreen = () => {
     >
       <StatusBar backgroundColor="#C2C2C2" barStyle="dark-content" />
       <Box className="absolute left-0 right-2 top-2 p-4">
-        <HStack space="lg" reversed={true}>
+        <HStack space="lg" reversed>
           <Pressable>
             <Icon
               as={Menu}
-              size={"xl"}
+              size="xl"
               color="black"
               style={{ width: 35, height: 35 }}
             />
@@ -47,7 +48,7 @@ const HomeScreen = () => {
 
         {/* Card with Buttons */}
         <Box className="justify-center rounded-2xl bg-[#D3D3D3] p-6 shadow-md">
-          <Text className="mb-2 text-center color-black" size={"4xl"}>
+          <Text className="mb-2 text-center color-black" size="4xl">
             Išmanu. Saugu. Lankstu
           </Text>
 
@@ -67,7 +68,7 @@ const HomeScreen = () => {
               size="lg"
               onPress={() => router.push("/sysInfo")}
             >
-              <Text className="color-black" size={"3xl"}>
+              <Text className="color-black" size="3xl">
                 Sistemų informacija
               </Text>
             </Button>
@@ -76,7 +77,7 @@ const HomeScreen = () => {
               variant="outline"
               size="lg"
             >
-              <Text className="color-black" size={"3xl"}>
+              <Text className="color-black" size="3xl">
                 Atraskite sprendimą
               </Text>
             </Button>
@@ -85,7 +86,7 @@ const HomeScreen = () => {
               variant="outline"
               size="lg"
             >
-              <Text className="color-black" size={"3xl"}>
+              <Text className="color-black" size="3xl">
                 Informacija
               </Text>
             </Button>
