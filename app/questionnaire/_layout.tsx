@@ -9,20 +9,19 @@ const Layout = () => {
     <GluestackUIProvider mode="light">
       <CategoriesProvider>
         <View style={styles.container}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="categories" />
-            <Stack.Screen name="questions" />
-          </Stack>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="categories" />
+          <Stack.Screen name="questions" />
+        </Stack>
         </View>
       </CategoriesProvider>
     </GluestackUIProvider>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F1EBE5", // Change this to your desired background color
+    backgroundColor: "#F1EBE5",
   },
 });
 

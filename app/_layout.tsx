@@ -15,10 +15,12 @@ const Layout = () => {
     <QueryClientProvider client={queryClient}>
       <SyncManager>
         <GluestackUIProvider mode="light">
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="sysInfo" options={{ headerShown: false }} />
+          <View style={styles.container}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="jungInfo" />
           </Stack>
+          </View>
         </GluestackUIProvider>
       </SyncManager>
     </QueryClientProvider>
