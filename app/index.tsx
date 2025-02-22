@@ -1,21 +1,13 @@
 import { router } from "expo-router";
-import { Menu } from "lucide-react-native";
 import React from "react";
 import { StatusBar, Image, View } from "react-native";
-
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
-import { Pressable } from "@/components/ui/pressable";
-import { Icon } from "@/components/ui/icon";
-import { Menu } from "lucide-react-native";
-import { router } from "expo-router";
 import LanguageModal from "@/components/LanguageModal";
-import { Icon } from "@/components/ui/icon";
-import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
+
 
 // Import the logo image
 // Ensure this path is correct
