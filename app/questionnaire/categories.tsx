@@ -18,13 +18,19 @@ const CategoriesScreen = () => {
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
   const [borderAnimations, setBorderAnimations] = useState<{ [key: number]: Animated.Value }>({});
 
-  // ✅ Fetch categories from Zustand (Supabase & AsyncStorage)
+  // ✅ Fetch categories when the screen loads
   useEffect(() => {
-    fetchCategories().then(() => {
-      setCategories(categories); // ✅ Store fetched categories in Zustand
-    });
+    fetchCategories();
   }, []);
 
+  // ✅ Update Zustand store **AFTER** categories are fetched
+  useEffect(() => {
+    if (categories.length > 0) {
+      setCategories(categories); // ✅ Store fetched categories in Zustand **AFTER** fetching
+    }
+  }, [categories]); // ✅ Runs only when categories update
+
+  // ✅ Initialize animations for border effects
   useEffect(() => {
     if (categories.length > 0) {
       const animations: { [key: number]: Animated.Value } = {};

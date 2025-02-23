@@ -46,10 +46,10 @@ const QuestionsScreen = () => {
         renderItem={({ item }) => (
           <Box className="p-4 bg-white mb-4" style={{ borderRadius: 18 }}>
             <Text size="xl" style={{ color: 'black', fontWeight: 'bold', textAlign: "left" }}>
-              {item.categoryName} {/* ✅ Now Aligned Left */}
+              {item.categoryName}
             </Text>
             <Text size="md" style={{ color: 'black', textAlign: "left", marginTop: 4 }}>
-              {item.categoryDescription} {/* ✅ Already Left-Aligned */}
+              {item.categoryDescription}
             </Text>
           </Box>
         )}

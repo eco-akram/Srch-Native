@@ -18,7 +18,10 @@ export const useCategorySelectionStore = create<CategorySelectionStore>((set) =>
   selectedCategories: new Set<number>(),
   categories: [],
 
-  setCategories: (categories) => set({ categories }),
+  setCategories: (categories) => set({ 
+    categories, 
+    selectedCategories: new Set() // ✅ Ensure fresh state
+  }),
 
   toggleCategory: (id) =>
     set((state) => {
