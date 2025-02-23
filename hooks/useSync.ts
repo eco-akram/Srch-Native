@@ -1,45 +1,40 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NetInfo from "@react-native-community/netinfo";
 import { supabase } from "../utils/supabase";
-import { useEffect, useState, useCallback, useRef } from "react";
 
-const STORAGE_KEY = "cached_data";
-
-// ✅ Fetch data from Supabase and store in AsyncStorage
-const fetchFromSupabase = async (table: string) => {
-  const { data, error } = await supabase.from(table).select("*");
-
-  if (error) {
-    console.error(`❌ Supabase Error: ${error.message}`);
-    throw new Error(error.message);
-  }
-
-  await AsyncStorage.setItem(`${STORAGE_KEY}_${table}`, JSON.stringify(data));
-
-  return data;
-};
-
-// ✅ Fetch from AsyncStorage when offline
-const fetchFromAsyncStorage = async (table: string) => {
-  const storedData = await AsyncStorage.getItem(`${STORAGE_KEY}_${table}`);
-  return storedData ? JSON.parse(storedData) : [];
-};
-
-// ✅ Sync Supabase data to AsyncStorage when online
-export async function syncDataIfOnline(table: string, queryClient: any) {
-  try {
-    const { data, error } = await supabase.from(table).select("*");
-    if (error) {
-      console.error(`❌ Sync Error (${table}): ${error.message}`);
-      return;
-    }
-
-    await AsyncStorage.setItem(`${STORAGE_KEY}_${table}`, JSON.stringify(data));
-
-    // ✅ IMMEDIATELY UPDATE UI WITHOUT UNNECESSARY FETCHES
-    queryClient.setQueryData([table], data);
-  } catch (err) {
-    console.error("❌ Unexpected sync error:", err);
-  }
+interface SyncState {
+  data: Record<string, any[]>; // Stores data for multiple tables
+  syncTable: (table: string) => Promise<void>;
+  loadStoredData: (table: string) => Promise<void>;
 }
+
+export const useSync = create<SyncState>((set) => ({
+  data: {},
+
+  // ✅ Fetch latest data from Supabase and update Zustand (NO AsyncStorage updates)
+  syncTable: async (table) => {
+    const { data, error } = await supabase.from(table).select("*");
+
+    if (!error && data) {
+      set((state) => ({ data: { ...state.data, [table]: data } }));
+    } else {
+      console.error(`❌ Failed to sync ${table} from Supabase:`, error);
+    }
+  },
+
+  // ✅ Load data from AsyncStorage when offline (NO updates to AsyncStorage)
+  loadStoredData: async (table) => {
+    try {
+      const storedData = await AsyncStorage.getItem(`sync_${table}`);
+
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        set((state) => ({ data: { ...state.data, [table]: parsedData } }));
+      } else {
+        console.warn(`⚠️ No cached data found for ${table}.`);
+      }
+    } catch (error) {
+      console.error(`❌ Error loading stored data for ${table} from AsyncStorage:`, error);
+    }
+  },
+}));

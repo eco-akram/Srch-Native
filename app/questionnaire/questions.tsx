@@ -8,17 +8,17 @@ import { Pressable } from '@/components/ui/pressable';
 import { Icon } from '@/components/ui/icon';
 import { ArrowLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
-import { useCategories } from './CategoriesContext';
+import { useCategorySelectionStore } from "../../store/useCategorySelectionStore"; // ✅ Zustand store
 
 const QuestionsScreen = () => {
-  const { selectedCategories, categories } = useCategories();
+  const { selectedCategories, categories } = useCategorySelectionStore(); // ✅ Read from Zustand
 
   const selectedCategoryList = categories.filter(category => selectedCategories.has(category.id));
 
   return (
     <Box className="align-center flex-1 justify-center p-4" style={{ backgroundColor: '#F1EBE5' }}>
       <StatusBar backgroundColor="#C2C2C2" barStyle="dark-content" />
-      
+
       {/* Back Button */}
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
@@ -27,24 +27,30 @@ const QuestionsScreen = () => {
           </Pressable>
         </HStack>
       </Box>
-      
+
       {/* Logo */}
       <Image
         source={require('../../assets/JUNG.png')}
         style={{ width: 120, height: 30, marginVertical: 25, alignSelf: 'center' }}
       />
-      
-        <Text size="3xl" style={{ color: 'black', alignSelf: 'center', marginVertical: 20, fontWeight: 'bold' }}>Pasirinktos kategorijos</Text>
-      
-      
+
+      {/* Title */}
+      <Text size="3xl" style={{ color: 'black', alignSelf: 'center', marginVertical: 20, fontWeight: 'bold' }}>
+        Pasirinktos kategorijos
+      </Text>
+
       {/* Selected Category List */}
       <FlatList
         data={selectedCategoryList}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <Box className="p-4 bg-white mb-4" style={{ borderRadius: 18 }}>
-            <Text size="xl" style={{ color: 'black', fontWeight: 'bold' }}>{item.name}</Text>
-            <Text size="md" style={{ color: 'black' }}>{item.description}</Text>
+            <Text size="xl" style={{ color: 'black', fontWeight: 'bold', textAlign: "left" }}>
+              {item.categoryName} {/* ✅ Now Aligned Left */}
+            </Text>
+            <Text size="md" style={{ color: 'black', textAlign: "left", marginTop: 4 }}>
+              {item.categoryDescription} {/* ✅ Already Left-Aligned */}
+            </Text>
           </Box>
         )}
       />
