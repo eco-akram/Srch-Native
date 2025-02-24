@@ -1,6 +1,8 @@
 import { create } from "zustand";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "../utils/supabase";
-import { useSync } from "@/hooks/useSync";
+import NetInfo from "@react-native-community/netinfo";
+import { useSync } from "@/hooks/useSync"; // Import global sync hook
 
 interface Category {
   id: number;
@@ -12,7 +14,6 @@ interface CategoryStore {
   categories: Category[];
   isLoading: boolean;
   fetchCategories: () => Promise<void>;
-  refreshFromManager: () => void;
 }
 
 const useCategoryStore = create<CategoryStore>((set) => ({
@@ -21,47 +22,30 @@ const useCategoryStore = create<CategoryStore>((set) => ({
 
   fetchCategories: async () => {
     try {
-      // ✅ Fetch from Supabase
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("id, categoryName, categoryDescription");
-
-      if (error) {
-        console.error("❌ Supabase Fetch Error:", error);
-        set({ isLoading: false });
-        return;
-      }
-
-      if (data) {
-        set({ categories: data, isLoading: false }); // ✅ Set state only
+      const netInfo = await NetInfo.fetch();
+      if (netInfo.isConnected) {
+        console.log("📱 Online: Fetching categories from Supabase...");
+        const { data, error } = await supabase.from("Categories").select("*");
+        if (error) {
+          console.error("❌ Error fetching categories:", error);
+        } else {
+          console.log("✅ Categories fetched from Supabase:", data);
+          set({ categories: data, isLoading: false });
+        }
+      } else {
+        console.log("📴 Offline: Fetching categories from AsyncStorage...");
+        const storedData = await AsyncStorage.getItem("sync_Categories");
+        if (storedData) {
+          set({ categories: JSON.parse(storedData), isLoading: false });
+        } else {
+          set({ isLoading: false });
+        }
       }
     } catch (err) {
-      console.error("❌ Error fetching categories:", err instanceof Error ? err.message : "Unknown error");
+      console.error("❌ Error fetching categories:", err);
       set({ isLoading: false });
     }
   },
-
-  // ✅ Fetch latest data from SyncManager
-  refreshFromManager: () => {
-    const { data } = useSync();
-    set({ categories: data["Categories"] || [] });
-    console.log("🔄 Categories refreshed from SyncManager.");
-  },
 }));
-
-// ✅ Subscribe to Supabase real-time changes
-supabase
-  .channel("realtime:categories")
-  .on(
-    "postgres_changes",
-    { event: "*", schema: "public", table: "Categories" },
-    async () => {
-      console.log("🔄 Supabase Change Detected - Notifying SyncManager");
-
-      // ✅ Notify SyncManager to update Zustand state
-      useCategoryStore.getState().refreshFromManager();
-    }
-  )
-  .subscribe();
 
 export default useCategoryStore;

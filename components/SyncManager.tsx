@@ -7,28 +7,33 @@ const tablesToSync = ["Categories", "Products", "Questions"];
 const NetworkContext = createContext<{ isOnline: boolean }>({ isOnline: true });
 
 export default function SyncManager({ children }: { children: React.ReactNode }) {
-  const { syncTable, loadStoredData } = useSync();
+  const { syncTable, loadStoredData, subscribeToRealtimeUpdates } = useSync();
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(async (state) => {
-      const online = !!state.isConnected; // ✅ Fix: Ensure it's always true or false
+      const online = !!state.isConnected;
       setIsOnline(online);
 
       if (online) {
-        console.log("🌐 Online - Syncing data from Supabase...");
+        console.log("🌍 Online - Syncing all tables...");
         for (const table of tablesToSync) {
-          await syncTable(table); // ✅ Fetch latest data from Supabase
+          await syncTable(table);
         }
+
+        // ✅ Start real-time updates globally
+        tablesToSync.forEach((table) => subscribeToRealtimeUpdates(table));
       } else {
-        console.log("📴 Offline - Loading from AsyncStorage...");
+        console.log("📴 Offline - Loading data from cache...");
         for (const table of tablesToSync) {
-          await loadStoredData(table); // ✅ Load from AsyncStorage
+          await loadStoredData(table);
         }
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return <NetworkContext.Provider value={{ isOnline }}>{children}</NetworkContext.Provider>;
