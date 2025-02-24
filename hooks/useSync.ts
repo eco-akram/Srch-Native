@@ -1,89 +1,77 @@
+import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NetInfo from "@react-native-community/netinfo";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState, useCallback, useRef } from "react";
-
 import { supabase } from "../utils/supabase";
+import useCategoryStore from "@/store/useCategoryFetch"; // Import the Zustand store
 
-const STORAGE_KEY = "cached_data";
-
-// ✅ Fetch data from Supabase and store in AsyncStorage
-const fetchFromSupabase = async (table: string) => {
-  const { data, error } = await supabase.from(table).select("*");
-
-  if (error) {
-    console.error(`❌ Supabase Error: ${error.message}`);
-    throw new Error(error.message);
-  }
-
-  await AsyncStorage.setItem(`${STORAGE_KEY}_${table}`, JSON.stringify(data));
-
-  return data;
-};
-
-// ✅ Fetch from AsyncStorage when offline
-const fetchFromAsyncStorage = async (table: string) => {
-  const storedData = await AsyncStorage.getItem(`${STORAGE_KEY}_${table}`);
-  return storedData ? JSON.parse(storedData) : [];
-};
-
-// ✅ Sync Supabase data to AsyncStorage when online
-export async function syncDataIfOnline(table: string, queryClient: any) {
-  try {
-    const { data, error } = await supabase.from(table).select("*");
-    if (error) {
-      console.error(`❌ Sync Error (${table}): ${error.message}`);
-      return;
-    }
-
-    await AsyncStorage.setItem(`${STORAGE_KEY}_${table}`, JSON.stringify(data));
-
-    // ✅ IMMEDIATELY UPDATE UI WITHOUT UNNECESSARY FETCHES
-    queryClient.setQueryData([table], data);
-  } catch (err) {
-    console.error("❌ Unexpected sync error:", err);
-  }
+interface SyncState {
+  data: Record<string, any[]>; // Stores data for multiple tables
+  syncTable: (table: string) => Promise<void>;
+  loadStoredData: (table: string) => Promise<void>;
+  subscribeToRealtimeUpdates: (table: string) => void;
 }
 
-// ✅ Optimized React Query Hook for Data Sync
-export function useSync(table: string) {
-  const queryClient = useQueryClient();
-  const [isOnline, setIsOnline] = useState(true);
-  const netInfoRef = useRef<(() => void) | null>(null); // ✅ Prevent unnecessary re-registrations
+export const useSync = create<SyncState>((set) => ({
+  data: {},
 
-  // ✅ Memoized function to fetch data
-  const fetchData = useCallback(async () => {
-    const cachedData = await fetchFromAsyncStorage(table);
-    return isOnline ? fetchFromSupabase(table) : cachedData;
-  }, [isOnline, table]);
+  // ✅ Fetch latest data from Supabase and update Zustand store
+  syncTable: async (table) => {
+    const { data, error } = await supabase.from(table).select("*");
+    if (!error && data) {
+      set((state) => ({ data: { ...state.data, [table]: data } }));
 
-  useEffect(() => {
-    if (netInfoRef.current) return; // ✅ Prevent duplicate event listeners
-
-    netInfoRef.current = NetInfo.addEventListener(async (state) => {
-      const online = !!state.isConnected;
-      setIsOnline(online);
-
-      if (online) {
-        await syncDataIfOnline(table, queryClient);
+      // Save to AsyncStorage for offline use
+      try {
+        await AsyncStorage.setItem(`sync_${table}`, JSON.stringify(data));
+      } catch (storageError) {
+        console.error(`❌ Error saving ${table} data to AsyncStorage:`, storageError);
       }
-    });
+
+      // ✅ Broadcast to Zustand store if it's Categories
+      if (table === "Categories") {
+        console.log("🔄 Updating Categories Zustand store...");
+        useCategoryStore.setState({ categories: data, isLoading: false });
+      }
+    } else {
+      console.error(`❌ Failed to sync ${table} from Supabase:`, error);
+    }
+  },
+
+  // ✅ Load cached data from AsyncStorage when offline
+  loadStoredData: async (table) => {
+    try {
+      const storedData = await AsyncStorage.getItem(`sync_${table}`);
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        set((state) => ({ data: { ...state.data, [table]: parsedData } }));
+
+        // ✅ Update Zustand store if it's Categories
+        if (table === "Categories") {
+          useCategoryStore.setState({ categories: parsedData, isLoading: false });
+        }
+      } else {
+        console.warn(`⚠️ No cached data found for ${table}.`);
+      }
+    } catch (error) {
+      console.error(`❌ Error loading stored data for ${table}:`, error);
+    }
+  },
+
+  // ✅ Global real-time listener
+  subscribeToRealtimeUpdates: (table) => {
+    const subscription = supabase
+      .channel(`realtime:${table}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: table },
+        async () => {
+          console.log(`🔄 Detected real-time update in ${table}, syncing...`);
+          await useSync.getState().syncTable(table); // Sync data globally
+        }
+      )
+      .subscribe();
 
     return () => {
-      if (netInfoRef.current) {
-        netInfoRef.current(); // ✅ Unsubscribe the listener
-        netInfoRef.current = null; // ✅ Prevent re-adding it
-      }
+      supabase.removeChannel(subscription);
     };
-  }, []); // ✅ Empty array ensures this effect runs only once
-
-  return useQuery({
-    queryKey: [table],
-    queryFn: fetchData,
-    staleTime: 1000 * 60 * 5, // ✅ Cache for 5 minutes
-    refetchOnReconnect: true, // ✅ Ensures refetching when coming back online
-    refetchOnMount: false, // ✅ Prevents redundant refetching on screen mount
-    refetchOnWindowFocus: false, // ✅ Avoids unnecessary re-fetch when switching apps
-    retry: 2, // ✅ Retry twice if an error occurs
-  });
-}
+  },
+}));

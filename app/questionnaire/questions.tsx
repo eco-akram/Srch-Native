@@ -1,19 +1,17 @@
-import { router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
-import React from "react";
-import { StatusBar, Image, FlatList } from "react-native";
-
-import { useCategories } from "../../contexts/CategoriesContext";
-
-import { Box } from "@/components/ui/box";
-import { Button } from "@/components/ui/button";
-import { HStack } from "@/components/ui/hstack";
-import { Icon } from "@/components/ui/icon";
-import { Pressable } from "@/components/ui/pressable";
-import { Text } from "@/components/ui/text";
+import React from 'react';
+import { StatusBar, Image, FlatList } from 'react-native';
+import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
+import { Box } from '@/components/ui/box';
+import { HStack } from '@/components/ui/hstack';
+import { Pressable } from '@/components/ui/pressable';
+import { Icon } from '@/components/ui/icon';
+import { ArrowLeft } from 'lucide-react-native';
+import { router } from 'expo-router';
+import { useCategorySelectionStore } from "../../store/useCategorySelectionStore"; // ✅ Zustand store
 
 const QuestionsScreen = () => {
-  const { selectedCategories, categories } = useCategories();
+  const { selectedCategories, categories } = useCategorySelectionStore(); // ✅ Read from Zustand
 
   const selectedCategoryList = categories.filter((category) =>
     selectedCategories.has(category.id),
@@ -51,15 +49,8 @@ const QuestionsScreen = () => {
         }}
       />
 
-      <Text
-        size="3xl"
-        style={{
-          color: "black",
-          alignSelf: "center",
-          marginVertical: 20,
-          fontWeight: "bold",
-        }}
-      >
+      {/* Title */}
+      <Text size="3xl" style={{ color: 'black', alignSelf: 'center', marginVertical: 20, fontWeight: 'bold' }}>
         Pasirinktos kategorijos
       </Text>
 
@@ -69,11 +60,11 @@ const QuestionsScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <Box className="p-4 bg-white mb-4" style={{ borderRadius: 18 }}>
-            <Text size="xl" style={{ color: "black", fontWeight: "bold" }}>
-              {item.name}
+            <Text size="xl" style={{ color: 'black', fontWeight: 'bold', textAlign: "left" }}>
+              {item.categoryName}
             </Text>
-            <Text size="md" style={{ color: "black" }}>
-              {item.description}
+            <Text size="md" style={{ color: 'black', textAlign: "left", marginTop: 4 }}>
+              {item.categoryDescription}
             </Text>
           </Box>
         )}

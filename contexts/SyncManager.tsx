@@ -1,65 +1,42 @@
+import React, { createContext, useContext, useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
-import { useQueryClient } from "@tanstack/react-query";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import { useSync } from "@/hooks/useSync";
 
-import { syncDataIfOnline } from "@/hooks/useSync";
+const tablesToSync = ["Categories", "Products", "Questions"];
 
-// ✅ Create context for global network status
 const NetworkContext = createContext<{ isOnline: boolean }>({ isOnline: true });
 
-const tablesToSync = ["users"]; // ✅ Add more tables as needed
-
-export default function SyncManager({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const queryClient = useQueryClient();
+export default function SyncManager({ children }: { children: React.ReactNode }) {
+  const { syncTable, loadStoredData, subscribeToRealtimeUpdates } = useSync();
   const [isOnline, setIsOnline] = useState<boolean>(true);
-  const netInfoRef = useRef<(() => void) | null>(null); // ✅ Prevent duplicate event listeners
 
   useEffect(() => {
-    if (netInfoRef.current) return; // Prevent duplicate registrations
-
-    netInfoRef.current = NetInfo.addEventListener(async (state) => {
+    const unsubscribe = NetInfo.addEventListener(async (state) => {
       const online = !!state.isConnected;
-      console.log(`Network status changed: ${online ? "Online" : "Offline"}`);
       setIsOnline(online);
 
       if (online) {
-        console.log("Device is online. Starting data sync...");
+        console.log("🌍 Online - Syncing all tables...");
         for (const table of tablesToSync) {
-          console.log(`Syncing data for table: ${table}`);
-          await syncDataIfOnline(table, queryClient);
-          console.log(`Sync completed for table: ${table}`);
+          await syncTable(table);
         }
-        console.log("All data sync completed.");
+
+        // ✅ Start real-time updates globally
+        tablesToSync.forEach((table) => subscribeToRealtimeUpdates(table));
       } else {
-        console.log("Device is offline. Data sync paused.");
+        console.log("📴 Offline - Loading data from cache...");
+        for (const table of tablesToSync) {
+          await loadStoredData(table);
+        }
       }
     });
 
     return () => {
-      if (netInfoRef.current) {
-        console.log("Unsubscribing from network status changes.");
-        netInfoRef.current(); // ✅ Unsubscribe the listener
-        netInfoRef.current = null; // ✅ Prevent duplicate listeners
-      }
+      unsubscribe();
     };
-  }, []); // ✅ Runs only once when the component mounts
+  }, []);
 
-  return (
-    <NetworkContext.Provider value={{ isOnline }}>
-      {children}
-    </NetworkContext.Provider>
-  );
+  return <NetworkContext.Provider value={{ isOnline }}>{children}</NetworkContext.Provider>;
 }
 
-// ✅ Hook to access online/offline status
 export const useNetwork = () => useContext(NetworkContext);
