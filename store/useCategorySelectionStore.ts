@@ -14,25 +14,28 @@ interface CategorySelectionStore {
   resetSelection: () => void;
 }
 
-export const useCategorySelectionStore = create<CategorySelectionStore>((set) => ({
-  selectedCategories: new Set<number>(),
-  categories: [],
+export const useCategorySelectionStore = create<CategorySelectionStore>(
+  (set) => ({
+    selectedCategories: new Set<number>(),
+    categories: [],
 
-  setCategories: (categories) => set({ 
-    categories, 
-    selectedCategories: new Set() // ✅ Ensure fresh state
+    setCategories: (categories) =>
+      set({
+        categories,
+        selectedCategories: new Set(), // ✅ Ensure fresh state
+      }),
+
+    toggleCategory: (id) =>
+      set((state) => {
+        const updatedSelection = new Set(state.selectedCategories);
+        if (updatedSelection.has(id)) {
+          updatedSelection.delete(id);
+        } else {
+          updatedSelection.add(id);
+        }
+        return { selectedCategories: updatedSelection };
+      }),
+
+    resetSelection: () => set({ selectedCategories: new Set<number>() }),
   }),
-
-  toggleCategory: (id) =>
-    set((state) => {
-      const updatedSelection = new Set(state.selectedCategories);
-      if (updatedSelection.has(id)) {
-        updatedSelection.delete(id);
-      } else {
-        updatedSelection.add(id);
-      }
-      return { selectedCategories: updatedSelection };
-    }),
-
-  resetSelection: () => set({ selectedCategories: new Set<number>() }),
-}));
+);

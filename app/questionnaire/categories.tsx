@@ -1,19 +1,22 @@
+import { router } from "expo-router";
+import { ArrowLeft, ChevronDown } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { StatusBar, Image, FlatList, Animated } from "react-native";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { Box } from "@/components/ui/box";
-import { HStack } from "@/components/ui/hstack";
-import { Pressable } from "@/components/ui/pressable";
-import { Icon } from "@/components/ui/icon";
-import { ArrowLeft, ChevronDown } from "lucide-react-native";
-import { router } from "expo-router";
+
 import useCategoryStore from "../../store/useCategoryFetch"; // ✅ Zustand Store for fetching
 import { useCategorySelectionStore } from "../../store/useCategorySelectionStore"; // ✅ Zustand Store for selection
 
+import { Box } from "@/components/ui/box";
+import { Button } from "@/components/ui/button";
+import { HStack } from "@/components/ui/hstack";
+import { Icon } from "@/components/ui/icon";
+import { Pressable } from "@/components/ui/pressable";
+import { Text } from "@/components/ui/text";
+
 const CategoriesScreen = () => {
   const { categories, isLoading, fetchCategories } = useCategoryStore();
-  const { selectedCategories, toggleCategory, setCategories } = useCategorySelectionStore(); // ✅ Zustand for selection
+  const { selectedCategories, toggleCategory, setCategories } =
+    useCategorySelectionStore(); // ✅ Zustand for selection
 
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
   const [borderAnimations, setBorderAnimations] = useState<{
@@ -49,7 +52,11 @@ const CategoriesScreen = () => {
   };
 
   if (isLoading) {
-    return <Text size="lg" style={{ textAlign: "center", marginTop: 20 }}>Loading categories...</Text>;
+    return (
+      <Text size="lg" style={{ textAlign: "center", marginTop: 20 }}>
+        Loading categories...
+      </Text>
+    );
   }
 
   return (
@@ -84,7 +91,15 @@ const CategoriesScreen = () => {
         }}
       />
 
-      <Text size="3xl" style={{ color: 'black', alignSelf: 'center', marginVertical: 20, fontWeight: 'bold' }}>
+      <Text
+        size="3xl"
+        style={{
+          color: "black",
+          alignSelf: "center",
+          marginVertical: 20,
+          fontWeight: "bold",
+        }}
+      >
         Pasirinkite kategorijas
       </Text>
 
@@ -100,10 +115,10 @@ const CategoriesScreen = () => {
               style={{
                 borderWidth: 2,
                 borderRadius: 18,
-                borderColor: isSelected ? '#1EB20A' : '#D3D3D3',
+                borderColor: isSelected ? "#1EB20A" : "#D3D3D3",
                 marginBottom: 10,
-                backgroundColor: 'white',
-                shadowColor: '#000',
+                backgroundColor: "white",
+                shadowColor: "#000",
                 shadowOffset: { width: 1, height: 5 }, // Tiny shadow below
                 shadowOpacity: 0.5, // Very subtle
                 shadowRadius: 3, // Small blur for smooth effect
@@ -117,30 +132,49 @@ const CategoriesScreen = () => {
                   borderTopLeftRadius: 18,
                   borderTopRightRadius: 18,
                   borderBottomLeftRadius: expandedCategory === item.id ? 0 : 18,
-                  borderBottomRightRadius: expandedCategory === item.id ? 0 : 18,
+                  borderBottomRightRadius:
+                    expandedCategory === item.id ? 0 : 18,
                 }}
               >
                 <HStack className="justify-between items-center">
                   <Image
-                    source={isSelected ? require('../../assets/check-circle.png') : require('../../assets/x-circle.png')}
+                    source={
+                      isSelected
+                        ? require("../../assets/check-circle.png")
+                        : require("../../assets/x-circle.png")
+                    }
                     style={{ width: 22, height: 22, marginRight: 10 }}
                   />
-                  <Text size="xl" style={{ color: 'black', fontWeight: 'bold', flex: 1, flexShrink: 1 }}>
+                  <Text
+                    size="xl"
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      flex: 1,
+                      flexShrink: 1,
+                    }}
+                  >
                     {item.categoryName} {/* ✅ Use categoryName */}
                   </Text>
                   <Pressable hitSlop={20} onPress={() => toggleExpand(item.id)}>
-                    <Icon as={ChevronDown} size={'lg'} color="black" />
+                    <Icon as={ChevronDown} size="lg" color="black" />
                   </Pressable>
                 </HStack>
               </Pressable>
               {expandedCategory === item.id && (
-                <Box className="p-4 bg-white"
-                style={{
-                  borderBottomLeftRadius: 18,
-                  borderBottomRightRadius: 18,
-                }}>
-                  <Text size="md" style={{color: 'black', alignSelf: "center" }}>
-                    {item.categoryDescription} {/* ✅ Use categoryDescription */}
+                <Box
+                  className="p-4 bg-white"
+                  style={{
+                    borderBottomLeftRadius: 18,
+                    borderBottomRightRadius: 18,
+                  }}
+                >
+                  <Text
+                    size="md"
+                    style={{ color: "black", alignSelf: "center" }}
+                  >
+                    {item.categoryDescription}{" "}
+                    {/* ✅ Use categoryDescription */}
                   </Text>
                 </Box>
               )}
@@ -159,7 +193,6 @@ const CategoriesScreen = () => {
           Toliau
         </Text>
       </Button>
-      
     </Box>
   );
 };
