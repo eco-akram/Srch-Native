@@ -1,13 +1,13 @@
-import { router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
-import React from "react";
-import { StatusBar, Image, View } from "react-native";
+import { router } from 'expo-router';
+import { ArrowLeft } from 'lucide-react-native';
+import React from 'react';
+import { StatusBar, Image, View } from 'react-native';
 
-import { Box } from "@/components/ui/box";
-import { HStack } from "@/components/ui/hstack";
-import { Icon } from "@/components/ui/icon";
-import { Pressable } from "@/components/ui/pressable";
-import { Text } from "@/components/ui/text";
+import { Box } from '@/components/ui/box';
+import { HStack } from '@/components/ui/hstack';
+import { Icon } from '@/components/ui/icon';
+import { Pressable } from '@/components/ui/pressable';
+import { Text } from '@/components/ui/text';
 
 // Import the logo image
 
@@ -15,13 +15,14 @@ const jungInfoScreen = () => {
   return (
     <Box
       className="align-center flex-1 justify-center p-4"
-      style={{ backgroundColor: "#F1EBE5" }}
+      style={{ backgroundColor: '#F1EBE5' }}
     >
       <StatusBar backgroundColor="#C2C2C2" barStyle="dark-content" />
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg" reversed={false}>
           <Pressable onPress={() => router.back()}>
             <Icon
+
               as={ArrowLeft}
               size="xl"
               color="black"
@@ -33,12 +34,12 @@ const jungInfoScreen = () => {
       <Box className="align-center justify-center p-4">
         {/* Logo */}
         <Image
-          source={require("../assets/JUNG.png")}
+          source={require('../assets/JUNG.png')}
           style={{
             width: 148,
             height: 37,
             marginBottom: 25,
-            alignSelf: "center",
+            alignSelf: 'center',
           }}
         />
 
@@ -51,8 +52,8 @@ const jungInfoScreen = () => {
           <View
             style={{
               height: 1,
-              backgroundColor: "#AAA9A9",
-              width: "100%",
+              backgroundColor: '#AAA9A9',
+              width: '100%',
               marginBottom: 16,
             }}
           />
