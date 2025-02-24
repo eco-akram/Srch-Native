@@ -1,14 +1,16 @@
+import { router } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { StatusBar, Image, FlatList } from "react-native";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+
+import { useCategories } from "../../contexts/CategoriesContext";
+
 import { Box } from "@/components/ui/box";
+import { Button } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
-import { Pressable } from "@/components/ui/pressable";
 import { Icon } from "@/components/ui/icon";
-import { ArrowLeft } from "lucide-react-native";
-import { router } from "expo-router";
-import { useCategories } from "./CategoriesContext";
+import { Pressable } from "@/components/ui/pressable";
+import { Text } from "@/components/ui/text";
 
 const QuestionsScreen = () => {
   const { selectedCategories, categories } = useCategories();
@@ -30,7 +32,7 @@ const QuestionsScreen = () => {
           <Pressable onPress={() => router.back()}>
             <Icon
               as={ArrowLeft}
-              size={"xl"}
+              size="xl"
               color="black"
               style={{ width: 35, height: 35 }}
             />

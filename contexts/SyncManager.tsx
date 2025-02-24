@@ -1,3 +1,5 @@
+import NetInfo from "@react-native-community/netinfo";
+import { useQueryClient } from "@tanstack/react-query";
 import React, {
   createContext,
   useContext,
@@ -5,9 +7,8 @@ import React, {
   useState,
   useRef,
 } from "react";
-import NetInfo from "@react-native-community/netinfo";
+
 import { syncDataIfOnline } from "@/hooks/useSync";
-import { useQueryClient } from "@tanstack/react-query";
 
 // ✅ Create context for global network status
 const NetworkContext = createContext<{ isOnline: boolean }>({ isOnline: true });

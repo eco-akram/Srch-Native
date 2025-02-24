@@ -5,7 +5,7 @@ import { Stack } from "expo-router";
 import React from "react";
 import { View, StyleSheet } from "react-native";
 
-import SyncManager from "@/components/SyncManager";
+import SyncManager from "~/contexts/SyncManager";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 
 // ✅ Create QueryClient instance
