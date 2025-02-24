@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import React from "react";
 import { View, StyleSheet } from "react-native";
+
 import SyncManager from "@/components/SyncManager";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 
@@ -17,10 +18,10 @@ const Layout = () => {
       <SyncManager>
         <GluestackUIProvider mode="light">
           <View style={styles.container}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="jungInfo" />
-          </Stack>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="jungInfo" />
+            </Stack>
           </View>
         </GluestackUIProvider>
       </SyncManager>
