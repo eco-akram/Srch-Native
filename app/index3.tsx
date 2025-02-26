@@ -9,8 +9,6 @@ import { VStack } from '@/components/ui/vstack';
 import LanguageModal from '@/components/LanguageModal';
 import { Text } from '@/components/ui/text';
 
-import { Settings, Info, CircleArrowRight  } from 'lucide-react-native';
-
 // Import the logo image
 // Ensure this path is correct
 
@@ -33,30 +31,25 @@ const HomeScreen = () => {
           style={{
             width: 148,
             height: 37,
-            marginBottom: 10,
+            marginBottom: 125,
             alignSelf: 'center',
           }}
         />
 
-        <Box className="align-center justify-center p-4 mb-28">
-          <Text className="text-center color-black font-bold text-3xl">
-            Welcome to "BLANK"
-          </Text>
-          <Text className="mb-2 text-center color-secondary font-medium text-lg">
-            Išmanu. Saugu. Lankstu
-          </Text>
-        </Box>
-
         {/* Card with Buttons */}
         <Box className="justify-center rounded-xl bg-[#EAEAEA] p-6">
-          {/*           <View
+          <Text className="mb-2 text-center color-black font-bold text-3xl">
+            Išmanu. Saugu. Lankstu
+          </Text>
+
+          <View
             style={{
               height: 1,
               backgroundColor: '#AAA9A9',
               width: '100%',
               marginBottom: 16,
             }}
-          /> */}
+          />
 
           <VStack className="justify-center" space="md">
             <Button
@@ -65,7 +58,6 @@ const HomeScreen = () => {
               size="xl"
               onPress={() => router.push('/questionnaire/categories')}
             >
-              <CircleArrowRight  size={24} color="white" />
               <Text className="color-white font-semibold text-xl">
                 Atraskite sprendimą
               </Text>
@@ -76,7 +68,6 @@ const HomeScreen = () => {
               size="xl"
               onPress={() => router.push('/sysInfoCategories/sysInfo')}
             >
-              <Settings size={24} color="black" />
               <Text className="color-black font-semibold text-xl">
                 Sistemų informacija
               </Text>
@@ -87,7 +78,6 @@ const HomeScreen = () => {
               size="xl"
               onPress={() => router.push('/jungInfo')}
             >
-              <Info size={24} color="black" />
               <Text className="color-black font-semibold text-xl">
                 Informacija
               </Text>

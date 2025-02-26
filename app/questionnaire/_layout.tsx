@@ -1,18 +1,20 @@
-import React from 'react';
-import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { Stack } from "expo-router";
-import { CategoriesProvider } from './CategoriesContext';
+import React from "react";
 import { View, StyleSheet } from "react-native";
+
+import { CategoriesProvider } from "../../contexts/CategoriesContext";
+
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 
 const Layout = () => {
   return (
     <GluestackUIProvider mode="light">
       <CategoriesProvider>
         <View style={styles.container}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="categories" />
-          <Stack.Screen name="questions" />
-        </Stack>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="categories" />
+            <Stack.Screen name="questions" />
+          </Stack>
         </View>
       </CategoriesProvider>
     </GluestackUIProvider>
