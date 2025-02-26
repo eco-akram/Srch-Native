@@ -1,10 +1,15 @@
+/* eslint-disable prettier/prettier */
+// eslint-disable-next-line no-undef
 import gluestackPlugin from "@gluestack-ui/nativewind-utils/tailwind-plugin";
+import nativewindPreset from "nativewind/preset";
+import { fontFamily } from 'tailwindcss/defaultTheme';
+
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   darkMode: "media",
   content: ["app/**/*.{tsx,jsx,ts,js}", "components/**/*.{tsx,jsx,ts,js}"],
-  presets: [require("nativewind/preset")],
+  presets: [nativewindPreset],
   safelist: [
     {
       pattern:
@@ -12,8 +17,25 @@ module.exports = {
     },
   ],
   theme: {
+    fontFamily: {
+      thin: ['Inter_100Thin', ...fontFamily.sans],
+      extralight: ['Inter_200ExtraLight', ...fontFamily.sans],
+      light: ['Inter_300Light', ...fontFamily.sans],
+      sans: ['Inter_400Regular', ...fontFamily.sans],
+      medium: ['Inter_500Medium', ...fontFamily.sans],
+      semibold: ['Inter_600SemiBold', ...fontFamily.sans],
+      bold: ['Inter_700Bold', ...fontFamily.sans],
+      extrabold: ['Inter_800ExtraBold', ...fontFamily.sans],
+      black: ['Inter_900Black', ...fontFamily.sans],
+    },
     extend: {
       colors: {
+        primaryBg: "FFFFFF", // white
+        secondaryBg: "EAEAEA", // gray
+        accent: "017AFF", // blue
+        main: "18181B", // black
+        mainText: "000000", // white
+        secondaryText: "919198", // gray
         primary: {
           0: "rgb(var(--color-primary-0)/<alpha-value>)",
           50: "rgb(var(--color-primary-50)/<alpha-value>)",
@@ -170,10 +192,15 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
-        mono: undefined,
-        roboto: ["Roboto", "sans-serif"],
+        thin: ['Inter_100Thin', ...fontFamily.sans],
+        extralight: ['Inter_200ExtraLight', ...fontFamily.sans],
+        light: ['Inter_300Light', ...fontFamily.sans],
+        sans: ['Inter_400Regular', ...fontFamily.sans],
+        medium: ['Inter_500Medium', ...fontFamily.sans],
+        semibold: ['Inter_600SemiBold', ...fontFamily.sans],
+        bold: ['Inter_700Bold', ...fontFamily.sans],
+        extrabold: ['Inter_800ExtraBold', ...fontFamily.sans],
+        black: ['Inter_900Black', ...fontFamily.sans],
       },
       fontWeight: {
         extrablack: "950",
@@ -192,12 +219,6 @@ module.exports = {
         "soft-3": "0px 0px 30px rgba(38, 38, 38, 0.1)",
         "soft-4": "0px 0px 40px rgba(38, 38, 38, 0.1)",
       },
-      primaryBg: "FFFFFF", // white
-      secondaryBg: "EAEAEA", // gray
-      accent: "017AFF", // blue
-      main: "18181B", // black
-      mainText: "000000", // white
-      secondaryText: "919198", // gray
     },
   },
   plugins: [gluestackPlugin],
