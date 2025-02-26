@@ -2,9 +2,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList } from "react-native";
 
-import { useQuestionStore } from "@/store/useQuestionStore";
-import { supabase } from "@/utils/supabase";
-
+import { useSync } from "@/hooks/useSync"; // ✅ Use global Sync Zustand store
+import { useCategorySelectionStore } from "../../store/useCategorySelectionStore"; // ✅ Import category selection store
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -12,78 +11,44 @@ import { Text } from "@/components/ui/text";
 const QuestionScreen = () => {
   const { id } = useLocalSearchParams(); // ✅ Get question ID from URL
   const router = useRouter();
-  const { questions } = useQuestionStore(); // ✅ Get stored questions
-  const [categoryName, setCategoryName] = useState<string | null>(null);
+  const { data } = useSync(); // ✅ Use global Zustand storage
+  const { selectedCategories } = useCategorySelectionStore(); // ✅ Get selected categories
+
+  const [filteredQuestions, setFilteredQuestions] = useState<any[]>([]);
   const [question, setQuestion] = useState<any>(null);
   const [answers, setAnswers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || !data.Questions || !data.Answers) return;
 
-    // Find the question in Zustand (faster) or fetch from Supabase
-    const currentQuestion = questions.find((q) => q.id === Number(id));
+    // ✅ Filter questions by selected categories
+    const questionsForSelectedCategories = data.Questions.filter((q) =>
+      selectedCategories.has(q.categoryId)
+    );
+
+    setFilteredQuestions(questionsForSelectedCategories);
+
+    // ✅ Find the current question within filtered questions
+    const currentQuestion = questionsForSelectedCategories.find(
+      (q) => q.id === Number(id)
+    );
+
     if (currentQuestion) {
       setQuestion(currentQuestion);
-      fetchAnswers(currentQuestion.id);
-    } else {
-      fetchQuestion(Number(id));
-    }
-  }, [id, questions]);
-
-  const fetchCategory = async (categoryId: number) => {
-    const { data, error } = await supabase
-      .from("Categories")
-      .select("categoryName")
-      .eq("id", categoryId)
-      .single();
-    if (error) console.error(error);
-    setCategoryName(data?.categoryName || "Unknown Category");
-  };
-
-  // Fetch question if not in Zustand
-  const fetchQuestion = async (questionId: number) => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("Questions")
-      .select("*")
-      .eq("id", questionId)
-      .single();
-    if (error) console.error(error);
-    setQuestion(data);
-    fetchAnswers(questionId);
-  };
-
-  // Fetch answers for the question
-  const fetchAnswers = async (questionId: number) => {
-    const { data, error } = await supabase
-      .from("Answers")
-      .select("*")
-      .eq("questionsId", questionId);
-    if (error) console.error(error);
-    setAnswers(data || []);
+      // ✅ Get answers for this question
+      const questionAnswers = data.Answers.filter(
+        (a) => a.questionsId === Number(id)
+      );
+      setAnswers(questionAnswers);
+    } 
     setLoading(false);
-  };
+  }, [id, data.Questions, data.Answers, selectedCategories]); // ✅ Reacts to state changes in Zustand
 
-  // Handle answer selection
-  const handleAnswerSelect = () => {
-    const currentIndex = questions.findIndex((q) => q.id === Number(id));
-    const nextQuestion = questions[currentIndex + 1];
-
-    if (nextQuestion) {
-      router.push({
-        pathname: "/questionnaire/[id]",
-        params: { id: nextQuestion.id },
-      }); // ✅ Go to next question
-    } else {
-      router.push("/questionnaire/categories"); // ✅ Redirect to results page (or summary)
-    }
-  };
-
-  // Handle answer selection
+  // ✅ Handle answer selection (Navigate to next filtered question or summary)
   const handleNextQuestion = () => {
-    const currentIndex = questions.findIndex((q) => q.id === Number(id));
-    const nextQuestion = questions[currentIndex + 1];
+    const currentIndex = filteredQuestions.findIndex((q) => q.id === Number(id));
+    const nextQuestion = filteredQuestions[currentIndex + 1];
 
     if (nextQuestion) {
       router.push({
@@ -121,7 +86,7 @@ const QuestionScreen = () => {
           <Button
             className="mb-4"
             style={{ borderRadius: 16 }}
-            onPress={handleAnswerSelect}
+            onPress={handleNextQuestion}
           >
             <Text size="lg" style={{ color: "white" }}>
               {item.answerText}
@@ -129,6 +94,8 @@ const QuestionScreen = () => {
           </Button>
         )}
       />
+
+      {/* Next Button */}
       <Button
         className="mt-6"
         style={{ borderRadius: 16 }}

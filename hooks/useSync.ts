@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "../utils/supabase";
-import useCategoryStore from "@/store/useCategoryFetch"; // Import the Zustand store
 
 interface SyncState {
   data: Record<string, any[]>; // Stores data for multiple tables
@@ -10,7 +9,7 @@ interface SyncState {
   subscribeToRealtimeUpdates: (table: string) => void;
 }
 
-export const useSync = create<SyncState>((set) => ({
+export const useSync = create<SyncState>((set, get) => ({
   data: {},
 
   // ✅ Fetch latest data from Supabase and update Zustand store
@@ -26,11 +25,6 @@ export const useSync = create<SyncState>((set) => ({
         console.error(`❌ Error saving ${table} data to AsyncStorage:`, storageError);
       }
 
-      // ✅ Broadcast to Zustand store if it's Categories
-      if (table === "Categories") {
-        console.log("🔄 Updating Categories Zustand store...");
-        useCategoryStore.setState({ categories: data, isLoading: false });
-      }
     } else {
       console.error(`❌ Failed to sync ${table} from Supabase:`, error);
     }
@@ -43,11 +37,6 @@ export const useSync = create<SyncState>((set) => ({
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         set((state) => ({ data: { ...state.data, [table]: parsedData } }));
-
-        // ✅ Update Zustand store if it's Categories
-        if (table === "Categories") {
-          useCategoryStore.setState({ categories: parsedData, isLoading: false });
-        }
       } else {
         console.warn(`⚠️ No cached data found for ${table}.`);
       }
@@ -56,16 +45,41 @@ export const useSync = create<SyncState>((set) => ({
     }
   },
 
-  // ✅ Global real-time listener
+  // ✅ Real-time listener (Updates state immediately)
   subscribeToRealtimeUpdates: (table) => {
     const subscription = supabase
       .channel(`realtime:${table}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: table },
-        async () => {
-          console.log(`🔄 Detected real-time update in ${table}, syncing...`);
-          await useSync.getState().syncTable(table); // Sync data globally
+        async (payload) => {
+          console.log(`🔄 Real-time update in ${table}:`, payload);
+
+          // Get the latest state
+          const currentData = get().data[table] || [];
+
+          // Update state based on event type
+          let updatedData = [...currentData];
+
+          if (payload.eventType === "INSERT") {
+            updatedData.push(payload.new); // Add new item
+          } else if (payload.eventType === "UPDATE") {
+            updatedData = updatedData.map((item) =>
+              item.id === payload.new.id ? payload.new : item
+            ); // Update modified item
+          } else if (payload.eventType === "DELETE") {
+            updatedData = updatedData.filter((item) => item.id !== payload.old.id); 
+          }
+
+          // ✅ Update Zustand store -> UI will re-render automatically
+          set((state) => ({ data: { ...state.data, [table]: updatedData } }));
+
+          // ✅ Save updated data to AsyncStorage
+          try {
+            await AsyncStorage.setItem(`sync_${table}`, JSON.stringify(updatedData));
+          } catch (storageError) {
+            console.error(`❌ Error saving updated ${table} data to AsyncStorage:`, storageError);
+          }
         }
       )
       .subscribe();

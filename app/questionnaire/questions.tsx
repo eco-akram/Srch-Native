@@ -1,11 +1,10 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React, { useState } from "react";
 import { StatusBar, Image, FlatList, ActivityIndicator } from "react-native";
 
-import { useCategorySelectionStore } from "../../store/useCategorySelectionStore"; // ✅ Zustand store
-import { useQuestionStore } from "../../store/useQuestionStore";
+import { useCategorySelectionStore } from "../../store/useCategorySelectionStore"; // ✅ Zustand for selected categories
+import { useSync } from "@/hooks/useSync"; // ✅ Fetch categories from Zustand storage
 
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
@@ -13,42 +12,38 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
-import { supabase } from "@/utils/supabase";
 
 const QuestionsScreen = () => {
-  const { selectedCategories, categories } = useCategorySelectionStore(); // ✅ Read from Zustand
-  const { setQuestions } = useQuestionStore(); // ✅ Store questions in Zustand
+  const { selectedCategories } = useCategorySelectionStore(); // ✅ Read selected categories from Zustand
+  const { data } = useSync(); // ✅ Fetch categories from global Zustand store
   const [loading, setLoading] = useState(false);
 
-  const selectedCategoryList = categories.filter((category) =>
-    selectedCategories.has(category.id),
-  );
+  // ✅ Get the selected categories from `useSync`
+  const selectedCategoryList = data.Categories
+    ? data.Categories.filter((category) => selectedCategories.has(category.id))
+    : [];
 
+  // ✅ Fetch Questions based on selected categories
   const fetchQuestions = async () => {
     setLoading(true);
-    const { data: questions, error } = await supabase
-      .from("Questions")
-      .select("*")
-      .in("categoryId", Array.from(selectedCategories))
-      .order("created_at", { ascending: true });
-
+  
+    // ✅ Fetch filtered questions from useSync() directly
+    const filteredQuestions = data.Questions
+      ? data.Questions.filter((q) => selectedCategories.has(q.categoryId))
+      : [];
+  
     setLoading(false);
-
-    if (error) {
-      console.error("Error fetching questions:", error);
-      return;
-    }
-
-    if (questions.length > 0) {
-      setQuestions(questions);
+  
+    if (filteredQuestions.length > 0) {
       router.push({
         pathname: "/questionnaire/[id]",
-        params: { id: questions[0].id },
+        params: { id: filteredQuestions[0].id }, // ✅ Start with first question
       });
     } else {
       alert("No questions found for the selected categories.");
     }
   };
+  
 
   return (
     <Box
@@ -117,7 +112,6 @@ const QuestionsScreen = () => {
         )}
       />
 
-      {/* Next Button */}
       {/* Next Button */}
       <Button
         className="mt-4"

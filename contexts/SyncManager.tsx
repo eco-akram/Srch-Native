@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { useSync } from "@/hooks/useSync";
 
-const tablesToSync = ["Categories", "Products", "Questions"];
+const tablesToSync = ["Categories", "Products", "Questions","Answers","Product_Answers"];
 
 const NetworkContext = createContext<{ isOnline: boolean }>({ isOnline: true });
 
