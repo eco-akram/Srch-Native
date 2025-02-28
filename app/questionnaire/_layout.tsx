@@ -1,8 +1,9 @@
-import { Stack } from "expo-router";
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import { Stack } from 'expo-router';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
-import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 
 const Layout = () => {
   return (
@@ -12,6 +13,7 @@ const Layout = () => {
           <Stack.Screen name="categories" />
           <Stack.Screen name="questions" />
         </Stack>
+        <StatusBar style="dark" />
       </View>
     </GluestackUIProvider>
   );
@@ -20,7 +22,7 @@ const Layout = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F1EBE5",
+    backgroundColor: '#FFFFFF',
   },
 });
 

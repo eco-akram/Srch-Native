@@ -6,6 +6,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import SyncManager from "@/contexts/SyncManager";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { StatusBar } from "expo-status-bar";
 
 //  Create QueryClient instance
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const Layout = () => {
             <Stack.Screen name="index" />
             <Stack.Screen name="jungInfo" />
           </Stack>
+          <StatusBar style="dark" />
           </View>
         </GluestackUIProvider>
       </SyncManager>
@@ -31,7 +33,8 @@ const Layout = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F1EBE5", // Change this to your desired background color
+    backgroundColor: "#FFFFFF", // Change this to your desired background color
+    paddingTop: 20,
   },
 });
 
