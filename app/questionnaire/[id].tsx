@@ -4,20 +4,49 @@ import { ActivityIndicator, FlatList, Pressable } from 'react-native';
 
 import { useSync } from '@/hooks/useSync'; // ✅ Use global Sync Zustand store
 import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Import category selection store
+import { useAnswerStore } from '../../store/useAnswerStore'; // Import Zustand store
+
+import { CircleCheckBig } from 'lucide-react-native';
+import { Circle } from 'lucide-react-native';
+
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
+import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
 
 const QuestionScreen = () => {
   const { id } = useLocalSearchParams(); // ✅ Get question ID from URL
   const router = useRouter();
+
   const { data } = useSync(); // ✅ Use global Zustand storage
   const { selectedCategories } = useCategorySelectionStore(); // ✅ Get selected categories
+  const { setAnswer, clearAnswers } = useAnswerStore(); // Add clearAnswers
+  const [answers, setAnswers] = useState<any[]>([]);
+
+  const [selectedAnswers, setSelectedAnswers] = useState<Set<string>>(
+    new Set(),
+  );
 
   const [filteredQuestions, setFilteredQuestions] = useState<any[]>([]);
   const [question, setQuestion] = useState<any>(null);
-  const [answers, setAnswers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // ✅ Calculate progress
+  const currentIndex = filteredQuestions.findIndex((q) => q.id === Number(id));
+  const totalQuestions = filteredQuestions.length;
+  const progress = ((currentIndex + 1) / totalQuestions) * 100; // Progress in percentage
+
+  const handleAnswerSelection = (answerId: string) => {
+    setSelectedAnswers((prev) => {
+      const newSelectedAnswers = new Set(prev);
+      if (newSelectedAnswers.has(answerId)) {
+        newSelectedAnswers.delete(answerId); // Deselect if already selected
+      } else {
+        newSelectedAnswers.add(answerId); // Select if not already selected
+      }
+      return newSelectedAnswers;
+    });
+  };
 
   useEffect(() => {
     if (!id || !data.Questions || !data.Answers) return;
@@ -47,6 +76,12 @@ const QuestionScreen = () => {
 
   // ✅ Handle answer selection (Navigate to next filtered question or summary)
   const handleNextQuestion = () => {
+    console.log(`Number of selected answers: ${selectedAnswers.size}`);
+
+    // ✅ Save selected answers to Zustand store
+    setAnswer(id as string, Array.from(selectedAnswers));
+
+    // ✅ Navigate to next question
     const currentIndex = filteredQuestions.findIndex(
       (q) => q.id === Number(id),
     );
@@ -56,10 +91,15 @@ const QuestionScreen = () => {
       router.push({
         pathname: '/questionnaire/[id]',
         params: { id: nextQuestion.id },
-      }); // ✅ Go to next question
+      });
     } else {
-      router.push('/questionnaire/categories'); // ✅ Redirect to results page (or summary)
+      // ✅ If this is the last question, clear the answers in Zustand
+      clearAnswers(); // Clear the answers
+      router.push('/questionnaire/categories'); // Redirect to summary or categories page
     }
+
+    // ✅ Reset selected answers for the next question
+    setSelectedAnswers(new Set());
   };
 
   if (loading) {
@@ -71,12 +111,23 @@ const QuestionScreen = () => {
   }
 
   return (
-    <Box className="flex-1 p-4" style={{ backgroundColor: '#F1EBE5' }}>
+    <Box className="flex-1 p-4" style={{ backgroundColor: '#FFFFFF' }}>
+      <Box className="flex-row justify-between items-center">
+        <Progress
+          value={progress}
+          size="md"
+          orientation="horizontal"
+          className="w-full bg-[#EAEAEA] h-4"
+        >
+          <ProgressFilledTrack className="h-2 bg-[#017AFF]" />
+        </Progress>
+        <Text className="font-bold color-secondaryText">
+          {currentIndex + 1}/{totalQuestions}
+        </Text>
+      </Box>
+
       {/* Question Title */}
-      <Text
-        size="2xl"
-        style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: 20 }}
-      >
+      <Text className="font-bold text-center text-2xl text-black">
         {question?.questionText}
       </Text>
 
@@ -86,11 +137,23 @@ const QuestionScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <Button
-            className="mb-4"
-            style={{ borderRadius: 16 }}
-            onPress={handleNextQuestion}
+            className="bg-white rounded-xl mt-3"
+            variant="outline"
+            size="xl"
+            style={{
+              backgroundColor: selectedAnswers.has(item.id)
+                ? '#18181B'
+                : '#FFFFFF',
+            }}
+            onPress={() => handleAnswerSelection(item.id)}
           >
-            <Text size="lg" style={{ color: 'white' }}>
+            <Text
+              className="color-white font-semibold text-lg"
+              size="lg"
+              style={{
+                color: selectedAnswers.has(item.id) ? 'white' : 'black',
+              }}
+            >
               {item.answerText}
             </Text>
           </Button>
