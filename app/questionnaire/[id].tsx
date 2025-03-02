@@ -95,7 +95,7 @@ const QuestionScreen = () => {
     } else {
       // ✅ If this is the last question, clear the answers in Zustand
       clearAnswers(); // Clear the answers
-      router.push('/questionnaire/categories'); // Redirect to summary or categories page
+      router.push('/questionnaire/result'); // Redirect to summary or categories page
     }
 
     // ✅ Reset selected answers for the next question
@@ -111,23 +111,31 @@ const QuestionScreen = () => {
   }
 
   return (
-    <Box className="flex-1 p-4" style={{ backgroundColor: '#FFFFFF' }}>
-      <Box className="flex-row justify-between items-center">
-        <Progress
-          value={progress}
-          size="md"
-          orientation="horizontal"
-          className="w-full bg-[#EAEAEA] h-4"
-        >
-          <ProgressFilledTrack className="h-2 bg-[#017AFF]" />
-        </Progress>
-        <Text className="font-bold color-secondaryText">
+    <Box className="flex-1 p-4 pt-14" style={{ backgroundColor: '#FFFFFF' }}>
+      <Box className="flex-row justify-between items-center pb-11">
+        {/* Progress Bar */}
+        <Box className="flex-1">
+          <Progress
+            value={progress}
+            size="md"
+            orientation="horizontal"
+            className="w-full bg-[#EAEAEA] h-4"
+          >
+            <ProgressFilledTrack className="h-2 bg-[#017AFF]" />
+          </Progress>
+        </Box>
+
+        {/* Progress Count */}
+        <Text className="font-bold color-secondaryText  min-w-[60px] text-right">
           {currentIndex + 1}/{totalQuestions}
         </Text>
       </Box>
 
       {/* Question Title */}
-      <Text className="font-bold text-center text-2xl text-black">
+      <Text
+        className="font-bold text-center text-3xl text-black mt-4"
+        style={{ marginBottom: 55 }}
+      >
         {question?.questionText}
       </Text>
 
@@ -136,10 +144,8 @@ const QuestionScreen = () => {
         data={answers}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Button
-            className="bg-white rounded-xl mt-3"
-            variant="outline"
-            size="xl"
+          <Pressable
+            className="bg-white rounded-xl mt-3 p-2 px-2 border-[#18181B] border"
             style={{
               backgroundColor: selectedAnswers.has(item.id)
                 ? '#18181B'
@@ -148,15 +154,12 @@ const QuestionScreen = () => {
             onPress={() => handleAnswerSelection(item.id)}
           >
             <Text
-              className="color-white font-semibold text-lg"
-              size="lg"
-              style={{
-                color: selectedAnswers.has(item.id) ? 'white' : 'black',
-              }}
+              className={`font-semibold text-xl text-center 
+      ${selectedAnswers.has(item.id) ? 'text-white' : 'text-black'}`}
             >
               {item.answerText}
             </Text>
-          </Button>
+          </Pressable>
         )}
       />
 
