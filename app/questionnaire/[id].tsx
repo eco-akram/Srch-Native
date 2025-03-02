@@ -1,12 +1,12 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList } from "react-native";
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Pressable } from 'react-native';
 
-import { useSync } from "@/hooks/useSync"; // ✅ Use global Sync Zustand store
-import { useCategorySelectionStore } from "../../store/useCategorySelectionStore"; // ✅ Import category selection store
-import { Box } from "@/components/ui/box";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+import { useSync } from '@/hooks/useSync'; // ✅ Use global Sync Zustand store
+import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Import category selection store
+import { Box } from '@/components/ui/box';
+import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 
 const QuestionScreen = () => {
   const { id } = useLocalSearchParams(); // ✅ Get question ID from URL
@@ -24,39 +24,41 @@ const QuestionScreen = () => {
 
     // ✅ Filter questions by selected categories
     const questionsForSelectedCategories = data.Questions.filter((q) =>
-      selectedCategories.has(q.categoryId)
+      selectedCategories.has(q.categoryId),
     );
 
     setFilteredQuestions(questionsForSelectedCategories);
 
     // ✅ Find the current question within filtered questions
     const currentQuestion = questionsForSelectedCategories.find(
-      (q) => q.id === Number(id)
+      (q) => q.id === Number(id),
     );
 
     if (currentQuestion) {
       setQuestion(currentQuestion);
       // ✅ Get answers for this question
       const questionAnswers = data.Answers.filter(
-        (a) => a.questionsId === Number(id)
+        (a) => a.questionsId === Number(id),
       );
       setAnswers(questionAnswers);
-    } 
+    }
     setLoading(false);
   }, [id, data.Questions, data.Answers, selectedCategories]); // ✅ Reacts to state changes in Zustand
 
   // ✅ Handle answer selection (Navigate to next filtered question or summary)
   const handleNextQuestion = () => {
-    const currentIndex = filteredQuestions.findIndex((q) => q.id === Number(id));
+    const currentIndex = filteredQuestions.findIndex(
+      (q) => q.id === Number(id),
+    );
     const nextQuestion = filteredQuestions[currentIndex + 1];
 
     if (nextQuestion) {
       router.push({
-        pathname: "/questionnaire/[id]",
+        pathname: '/questionnaire/[id]',
         params: { id: nextQuestion.id },
       }); // ✅ Go to next question
     } else {
-      router.push("/questionnaire/categories"); // ✅ Redirect to results page (or summary)
+      router.push('/questionnaire/categories'); // ✅ Redirect to results page (or summary)
     }
   };
 
@@ -69,11 +71,11 @@ const QuestionScreen = () => {
   }
 
   return (
-    <Box className="flex-1 p-4" style={{ backgroundColor: "#F1EBE5" }}>
+    <Box className="flex-1 p-4" style={{ backgroundColor: '#F1EBE5' }}>
       {/* Question Title */}
       <Text
         size="2xl"
-        style={{ fontWeight: "bold", textAlign: "center", marginBottom: 20 }}
+        style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: 20 }}
       >
         {question?.questionText}
       </Text>
@@ -88,7 +90,7 @@ const QuestionScreen = () => {
             style={{ borderRadius: 16 }}
             onPress={handleNextQuestion}
           >
-            <Text size="lg" style={{ color: "white" }}>
+            <Text size="lg" style={{ color: 'white' }}>
               {item.answerText}
             </Text>
           </Button>
@@ -97,13 +99,12 @@ const QuestionScreen = () => {
 
       {/* Next Button */}
       <Button
-        className="mt-6"
-        style={{ borderRadius: 16 }}
+        className="bg-[#18181B] rounded-xl mt-3"
+        variant="outline"
+        size="xl"
         onPress={handleNextQuestion}
       >
-        <Text size="lg" style={{ color: "white", textAlign: "center" }}>
-          Next
-        </Text>
+        <Text className="color-white font-semibold text-xl">Toliau</Text>
       </Button>
     </Box>
   );
