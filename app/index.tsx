@@ -40,7 +40,7 @@ const HomeScreen = () => {
 
         <Box className="align-center justify-center p-4 mb-28">
           <Text className="text-center color-black font-bold text-3xl">
-            Welcome to "BLANK"
+            Welcome to JUNG
           </Text>
           <Text className="mb-2 text-center color-secondary font-medium text-lg">
             Išmanu. Saugu. Lankstu

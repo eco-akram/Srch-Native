@@ -50,7 +50,7 @@ const QuestionsScreen = () => {
       className="align-center flex-1 justify-center p-4 pt-14"
       style={{ backgroundColor: '#FFFFFF' }}
     >
-      <StatusBar backgroundColor="#C2C2C2" barStyle="dark-content" />
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
       {/* Back Button */}
       <Box className="absolute left-2 right-0 top-2 p-4">

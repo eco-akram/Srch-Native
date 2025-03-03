@@ -1,6 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StatusBar,
+} from 'react-native';
 
 import { useSync } from '@/hooks/useSync'; // ✅ Use global Sync Zustand store
 import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Import category selection store
@@ -114,6 +119,9 @@ const QuestionScreen = () => {
     <Box className="flex-1 p-4 pt-14" style={{ backgroundColor: '#FFFFFF' }}>
       <Box className="flex-row justify-between items-center pb-11">
         {/* Progress Bar */}
+
+        <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
+
         <Box className="flex-1">
           <Progress
             value={progress}
