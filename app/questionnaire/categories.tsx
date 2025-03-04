@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { ArrowLeft, ChevronDown } from 'lucide-react-native';
 import { StatusBar, Image, FlatList, Animated } from 'react-native';
 
 import { useSync } from '@/hooks/useSync'; // ✅ Fetch Categories globally
 import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Zustand store for category selection
-
+import { TranslationContext } from '../../contexts/TranslationContext';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
@@ -17,6 +17,8 @@ const CategoriesScreen = () => {
   const { data } = useSync(); // ✅ Fetch categories from Zustand
   const { categories, setCategories, selectedCategories, toggleCategory } =
     useCategorySelectionStore(); // ✅ Zustand store
+    const translationContext = useContext(TranslationContext);
+         const translate = translationContext ? translationContext.translate : () => '';
 
   // ✅ Expanded category state for dropdown effect
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
@@ -36,7 +38,7 @@ const CategoriesScreen = () => {
   // ✅ Navigate to questions page while preserving selected categories
   const goToQuestionsScreen = () => {
     if (selectedCategories.size === 0) {
-      alert('Pasirinkite bent vieną kategoriją.');
+      alert(translate("errOneCategory"));
       return;
     }
     router.push('/questionnaire/questions');
@@ -91,7 +93,7 @@ const CategoriesScreen = () => {
           fontWeight: 'bold',
         }}
       >
-        Pasirinkite kategorijas
+        {translate('chooseCategory')}
       </Text>
 
       {/* ✅ Category List */}
@@ -182,7 +184,7 @@ const CategoriesScreen = () => {
         onPress={goToQuestionsScreen}
       >
         <Text className="color-white font-semibold text-xl">
-          Toliau
+          {translate('next')}
         </Text>
       </Button>
     </Box>

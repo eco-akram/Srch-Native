@@ -1,12 +1,12 @@
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StatusBar, Image, FlatList, ActivityIndicator } from 'react-native';
 import { BookMarked } from 'lucide-react-native';
 
 import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Zustand for selected categories
 import { useSync } from '@/hooks/useSync'; // ✅ Fetch categories from Zustand storage
-
+import { TranslationContext } from '../../contexts/TranslationContext';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
@@ -18,7 +18,9 @@ const QuestionsScreen = () => {
   const { selectedCategories } = useCategorySelectionStore(); // ✅ Read selected categories from Zustand
   const { data } = useSync(); // ✅ Fetch categories from global Zustand store
   const [loading, setLoading] = useState(false);
-
+  const translationContext = useContext(TranslationContext);
+           const translate = translationContext ? translationContext.translate : () => '';
+  
   // ✅ Get the selected categories from `useSync`
   const selectedCategoryList = data.Categories
     ? data.Categories.filter((category) => selectedCategories.has(category.id))
@@ -87,7 +89,7 @@ const QuestionsScreen = () => {
           fontWeight: 'bold',
         }}
       >
-        Pasirinktos kategorijos
+        {translate("choosenCategories")}
       </Text>
 
       {/* Selected Category List */}
@@ -147,7 +149,7 @@ const QuestionsScreen = () => {
         {loading ? (
           <ActivityIndicator color="white" />
         ) : (
-          <Text className="color-white font-semibold text-xl">Toliau</Text>
+          <Text className="color-white font-semibold text-xl">{translate("next")}</Text>
         )}
       </Button>
     </Box>

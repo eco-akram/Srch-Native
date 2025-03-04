@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,7 +10,7 @@ import {
 import { useSync } from '@/hooks/useSync'; // ✅ Use global Sync Zustand store
 import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Import category selection store
 import { useAnswerStore } from '../../store/useAnswerStore'; // Import Zustand store
-
+import { TranslationContext } from '../../contexts/TranslationContext';
 import { ArrowLeft, CircleCheckBig, Icon } from 'lucide-react-native';
 import { Circle } from 'lucide-react-native';
 
@@ -23,6 +23,8 @@ import { HStack } from '~/components/ui/hstack';
 const QuestionScreen = () => {
   const { id } = useLocalSearchParams(); // ✅ Get question ID from URL
   const router = useRouter();
+   const translationContext = useContext(TranslationContext);
+             const translate = translationContext ? translationContext.translate : () => '';
 
   const { data } = useSync(); // ✅ Use global Zustand storage
   const { selectedCategories } = useCategorySelectionStore(); // ✅ Get selected categories
@@ -191,7 +193,7 @@ const QuestionScreen = () => {
         size="xl"
         onPress={handleNextQuestion}
       >
-        <Text className="color-white font-semibold text-xl">Toliau</Text>
+        <Text className="color-white font-semibold text-xl">{translate("next")}</Text>
       </Button>
     </Box>
   );

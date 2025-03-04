@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
 import { ArrowLeft, Download, Settings, Mail } from 'lucide-react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StatusBar, Image, View, Linking, Dimensions } from 'react-native';
-
+import { TranslationContext } from '../../contexts/TranslationContext';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
@@ -12,6 +12,8 @@ import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
 
 const ResultScreen = () => {
+  const translationContext = useContext(TranslationContext);
+               const translate = translationContext ? translationContext.translate : () => '';
   // Pavyzdinė pasirinktos sistemos informacija
   const selectedSystem = {
     name: 'JUNG eNet Smart Home',
@@ -104,7 +106,7 @@ const ResultScreen = () => {
         >
           <Download size={24} color="white" />
           <Text className="color-white font-semibold text-xl ml-2">
-            Parsisiųsti rezultatus PDF
+            {translate("pdf")}
           </Text>
         </Button>
 
@@ -117,13 +119,13 @@ const ResultScreen = () => {
         >
           <Settings size={24} color="black" />
           <Text className="color-black font-semibold text-xl ml-2">
-            Sistemos konfigūracija
+          {translate("config")}
           </Text>
         </Button>
 
         {/* Tekstas su nuoroda į tiekėjo kontaktų puslapį */}
         <Text className="text-center color-[#666666] font-medium text-lg mb-4">
-          Paspaudę mygtuką žemiau, būsite nukreipti(-a) į puslapį su tiekėjo kontaktinėmis informacijomis.
+        {translate("contactInfo")}
         </Text>
 
         {/* Mygtukas "Susisiekti" */}
@@ -135,7 +137,7 @@ const ResultScreen = () => {
         >
           <Mail size={24} color="white" />
           <Text className="color-white font-semibold text-xl ml-2">
-            Susisiekti
+            {translate("contactSupplier")}
           </Text>
         </Button>
 
@@ -147,7 +149,7 @@ const ResultScreen = () => {
           onPress={handleGoBackToHome}
         >
           <Text className="color-white font-semibold text-xl">
-            Grįžti atgal į pagrindinį
+           {translate("backToMain")}
           </Text>
         </Button>
       </Box>
