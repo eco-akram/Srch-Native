@@ -21,14 +21,17 @@ const CategoriesScreen = () => {
   // ✅ Expanded category state for dropdown effect
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
 
-  // ✅ Sync categories from `useSync` to Zustand on mount
   useEffect(() => {
     if (data.Categories && data.Categories.length > 0) {
-      setCategories(data.Categories);
+      // Compare existing categories with the new data
+      const areCategoriesEqual = JSON.stringify(categories) === JSON.stringify(data.Categories);
+      if (!areCategoriesEqual) {
+      
+        setCategories(data.Categories); // Only update if categories have changed
+      } 
     }
-  }, [data.Categories, setCategories]);
+  }, [data.Categories, categories, setCategories]);
 
-  // ✅ Toggle category expansion
   const toggleExpand = (id: number) => {
     setExpandedCategory(expandedCategory === id ? null : id);
   };
@@ -102,7 +105,6 @@ const CategoriesScreen = () => {
           const isSelected = selectedCategories.has(item.id);
 
           return (
-            
             <Animated.View
               style={{
                 borderWidth: 2,
@@ -119,7 +121,9 @@ const CategoriesScreen = () => {
             >
               <Pressable
                 className="bg-white p-4"
-                onPress={() => toggleCategory(item.id)}
+                onPress={() => {
+                  toggleCategory(item.id);
+                }}
                 style={{
                   borderTopLeftRadius: 18,
                   borderTopRightRadius: 18,
