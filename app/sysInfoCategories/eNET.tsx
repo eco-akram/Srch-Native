@@ -47,6 +47,7 @@ const eNETScreen = () => {
         </HStack>
       </Box>
 
+
       <Box className="align-center justify-center p-4">
         {/* Logo */}
         <Image

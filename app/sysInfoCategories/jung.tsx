@@ -48,6 +48,7 @@ const jungScreen = () => {
         </HStack>
       </Box>
 
+
       <Box className="align-center justify-center p-4">
         {/* Logo */}
         <Image
@@ -75,6 +76,7 @@ const jungScreen = () => {
           <Text className="mb-4 text-center color-black font-semibold text-2xl">
             {translate("aboutJung")}
           </Text>
+          
 
           <View
             style={{

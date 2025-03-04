@@ -35,7 +35,9 @@ const jungInfoScreen = () => {
         </HStack>
       </Box>
 
+
       <Box className="align-center justify-center p-4">
+
         {/* Logotipas */}
         <Image
           source={require('../assets/JUNG.png')}
