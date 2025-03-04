@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StatusBar, Image, View, Linking, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // For fade effect
 
@@ -11,8 +11,11 @@ import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
+import { TranslationContext } from '../../contexts/TranslationContext';
 
 const lbManageScreen = () => {
+  const translationContext = useContext(TranslationContext);
+         const translate = translationContext ? translationContext.translate : () => '';
   // Function to handle the button press and open the URL
   const handleMoreInfoPress = () => {
     const url =
@@ -32,7 +35,7 @@ const lbManageScreen = () => {
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
       {/* Header with Back Button */}
-      <Box className="absolute left-0 right-0 top-0 p-4 shadow-sm">
+      <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={() => router.back()}>
             <Icon
@@ -63,14 +66,14 @@ const lbManageScreen = () => {
             LB-Management
           </Text>
           <Text className="text-center color-[#666666] font-medium text-lg">
-            Elektroniniai sprendimai naujiems pastatams ir modernizavimui
+           {translate("sysInfoSub")}
           </Text>
         </Box>
 
         {/* Card with Content */}
         <Box className="justify-center rounded-xl bg-white p-6 shadow-md">
           <Text className="mb-4 text-center color-black font-semibold text-2xl">
-            Apie LB-Management
+            {translate('aboutLbManagement')}
           </Text>
 
           <View
@@ -90,16 +93,7 @@ const lbManageScreen = () => {
             >
               <Box className="justify-center rounded-xl bg-[#F8F8F8] p-6 shadow-sm">
                 <Text className="text-center color-[#666666] font-medium text-lg">
-                  LB-Management tai išmani pastatų valdymo sistema, skirta
-                  efektyviam apšvietimo, klimato kontrolės ir kitų inžinerinių
-                  sprendimų valdymui. Ši sistema leidžia centralizuotai stebėti
-                  ir reguliuoti įvairius pastato parametrus, užtikrinant didesnį
-                  energijos vartojimo efektyvumą bei komfortą. LB-Management 
-                  yra pritaikyta tiek gyvenamiesiems, tiek komerciniams
-                  pastatams, suteikdama vartotojams intuityvią sąsają bei
-                  galimybę valdyti sistemas nuotoliniu būdu. Dėl lankstumo ir
-                  išmaniųjų funkcijų ši sistema tampa neatsiejama modernių
-                  pastatų dalimi.
+                  {translate('lbManagementInfo')}
                 </Text>
               </Box>
             </ScrollView>
@@ -119,7 +113,7 @@ const lbManageScreen = () => {
 
           {/* Scroll Hint */}
           <Text className="text-center color-[#666666] font-medium text-sm mt-2">
-            Slinkite žemyn, kad pamatytumėte daugiau
+            {translate('scroll')}
           </Text>
 
           {/* "Daugiau informacijos" Button */}
@@ -130,7 +124,7 @@ const lbManageScreen = () => {
             onPress={handleMoreInfoPress}
           >
             <Text className="color-white font-semibold text-xl">
-              Daugiau informacijos
+              {translate("moreInfo")}
             </Text>
           </Button>
         </Box>

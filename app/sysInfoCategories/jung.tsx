@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StatusBar, Image, View, Linking, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // For fade effect
 
@@ -11,8 +11,11 @@ import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
+import { TranslationContext } from '../../contexts/TranslationContext';
 
 const jungScreen = () => {
+  const translationContext = useContext(TranslationContext);
+       const translate = translationContext ? translationContext.translate : () => '';
   // Function to handle the button press and open the URL
   const handleMoreInfoPress = () => {
     const url =
@@ -32,7 +35,7 @@ const jungScreen = () => {
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
       {/* Header with Back Button */}
-      <Box className="absolute left-0 right-0 top-0 p-4 shadow-sm">
+      <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={() => router.back()}>
             <Icon
@@ -60,17 +63,17 @@ const jungScreen = () => {
         {/* Title and Subtitle */}
         <Box className="align-center justify-center p-4 mb-10">
           <Text className="text-center color-black font-bold text-3xl mb-2">
-            JUNG Home
+            JUNG
           </Text>
           <Text className="text-center color-[#666666] font-medium text-lg">
-            Elektroniniai sprendimai naujiems pastatams ir modernizavimui
+          {translate('sysInfoSub')}
           </Text>
         </Box>
 
         {/* Card with Content */}
         <Box className="justify-center rounded-xl bg-white p-6 shadow-md">
           <Text className="mb-4 text-center color-black font-semibold text-2xl">
-            Apie JUNG Home
+            {translate("aboutJung")}
           </Text>
 
           <View
@@ -90,18 +93,7 @@ const jungScreen = () => {
             >
               <Box className="justify-center rounded-xl bg-[#F8F8F8] p-6 shadow-sm">
                 <Text className="text-center color-[#666666] font-medium text-lg">
-                  JUNG kompanija siūlo išmaniuosius namų sprendimus, kurie leidžia
-                  valdyti apšvietimą, šildymą, saugumą ir energiją. Šie sprendimai
-                  suteikia galimybę lengvai kontroliuoti įvairias namų sistemas per
-                  centrinius valdymo pultus arba mobiliąsias programas. JUNG
-                  technologijos apima išmanų apšvietimo valdymą, kuris gali būti
-                  pritaikytas pagal individualius poreikius, taip pat saugumo
-                  sistemas su judesio jutikliais, kameromis ir užraktais,
-                  užtikrinančiais namų apsaugą. Klimato valdymo funkcija leidžia
-                  automatiškai reguliuoti temperatūrą ir vėdinimą, kad būtų
-                  pasiektas optimalus komfortas. Be to, JUNG sprendimai padeda
-                  efektyviau valdyti energijos sunaudojimą, taip sumažinant išlaidas
-                  ir didinant energijos taupymą.
+                  {translate("jungInfo")}
                 </Text>
               </Box>
             </ScrollView>
@@ -121,7 +113,7 @@ const jungScreen = () => {
 
           {/* Scroll Hint */}
           <Text className="text-center color-[#666666] font-medium text-sm mt-2">
-            Slinkite žemyn, kad pamatytumėte daugiau
+            {translate("scroll")}
           </Text>
 
           {/* "Daugiau informacijos" Button */}
@@ -132,7 +124,7 @@ const jungScreen = () => {
             onPress={handleMoreInfoPress}
           >
             <Text className="color-white font-semibold text-xl">
-              Daugiau informacijos
+              {translate("moreInfo")}
             </Text>
           </Button>
         </Box>

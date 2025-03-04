@@ -1,11 +1,12 @@
 import { Stack } from "expo-router";
 import React from "react";
 import { View, StyleSheet } from "react-native";
-
+import { TranslationProvider } from '../../contexts/TranslationContext';
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 
 const Layout = () => {
   return (
+    <TranslationProvider>
     <GluestackUIProvider mode="light">
       <View style={styles.container}>
         <Stack screenOptions={{ headerShown: false }}>
@@ -17,6 +18,7 @@ const Layout = () => {
         </Stack>
       </View>
     </GluestackUIProvider>
+    </TranslationProvider>
   );
 };
 

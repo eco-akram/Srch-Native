@@ -100,7 +100,7 @@ const QuestionsScreen = () => {
             style={{ borderRadius: 18 }}
           >
             <BookMarked size={24} color="black" />
-            <Box>
+            <Box style={{ flex: 1 }}>
               <Text
                 size="xl"
                 style={{

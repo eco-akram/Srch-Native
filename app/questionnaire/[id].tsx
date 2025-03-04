@@ -11,13 +11,14 @@ import { useSync } from '@/hooks/useSync'; // ✅ Use global Sync Zustand store
 import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Import category selection store
 import { useAnswerStore } from '../../store/useAnswerStore'; // Import Zustand store
 
-import { CircleCheckBig } from 'lucide-react-native';
+import { ArrowLeft, CircleCheckBig, Icon } from 'lucide-react-native';
 import { Circle } from 'lucide-react-native';
 
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
+import { HStack } from '~/components/ui/hstack';
 
 const QuestionScreen = () => {
   const { id } = useLocalSearchParams(); // ✅ Get question ID from URL
@@ -117,11 +118,23 @@ const QuestionScreen = () => {
 
   return (
     <Box className="flex-1 p-4 pt-14" style={{ backgroundColor: '#FFFFFF' }}>
-      <Box className="flex-row justify-between items-center pb-11">
-        {/* Progress Bar */}
+    <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-        <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
+    {/* Back Arrow */}
+    <Box className="absolute left-2 right-0 top-2 p-4">
+      <HStack space="lg">
+        <Pressable onPress={() => router.back()}>
+          <ArrowLeft
+            size={35}
+            color="black"
+            style={{ width: 35, height: 35 }}
+          />
+        </Pressable>
+      </HStack>
+    </Box>
 
+    <Box className="flex-row justify-between items-center pt-10 pb-11">
+      {/* Progress Bar */}
         <Box className="flex-1">
           <Progress
             value={progress}

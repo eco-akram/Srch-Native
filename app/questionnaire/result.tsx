@@ -54,7 +54,7 @@ const ResultScreen = () => {
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
       {/* Viršutinė dalis su atgal mygtuku */}
-      <Box className="absolute left-0 right-0 top-0 p-4 shadow-sm">
+      <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={() => router.back()}>
             <Icon

@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StatusBar, Image, View, Linking, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // For fade effect
 
@@ -11,8 +11,11 @@ import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
+import { TranslationContext } from '../../contexts/TranslationContext';
 
 const knxScreen = () => {
+  const translationContext = useContext(TranslationContext);
+       const translate = translationContext ? translationContext.translate : () => '';
   // Function to handle the button press and open the URL
   const handleMoreInfoPress = () => {
     const url =
@@ -32,7 +35,7 @@ const knxScreen = () => {
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
       {/* Header with Back Button */}
-      <Box className="absolute left-0 right-0 top-0 p-4 shadow-sm">
+      <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={() => router.back()}>
             <Icon
@@ -63,14 +66,14 @@ const knxScreen = () => {
             KNX
           </Text>
           <Text className="text-center color-[#666666] font-medium text-lg">
-            Elektroniniai sprendimai naujiems pastatams ir modernizavimui
+          {translate('sysInfoSub')}
           </Text>
         </Box>
 
         {/* Card with Content */}
         <Box className="justify-center rounded-xl bg-white p-6 shadow-md">
           <Text className="mb-4 text-center color-black font-semibold text-2xl">
-            Apie KNX
+          {translate("aboutKNX")}
           </Text>
 
           <View
@@ -90,17 +93,7 @@ const knxScreen = () => {
             >
               <Box className="justify-center rounded-xl bg-[#F8F8F8] p-6 shadow-sm">
                 <Text className="text-center color-[#666666] font-medium text-lg">
-                  KNX - tai pažangi išmaniųjų pastatų valdymo sistema,
-                  užtikrinanti efektyvų apšvietimo, šildymo, vėdinimo, žaliuzių
-                  ir kitų inžinerinių sistemų automatizavimą. KNX standartas
-                  leidžia skirtingiems įrenginiams sklandžiai komunikuoti
-                  tarpusavyje, suteikiant maksimalų lankstumą ir pritaikymo
-                  galimybes tiek gyvenamuosiuose, tiek komerciniuose pastatuose.
-                  KNX sprendimai išsiskiria aukšta kokybe, intuityviu
-                  valdymu bei galimybe integruoti nuotolinį valdymą per
-                  mobiliąsias programėles ar balsu valdomas sistemas. Tai puikus
-                  pasirinkimas siekiantiems didesnio komforto, saugumo ir
-                  energijos efektyvumo savo erdvėse.
+                  {translate('knxInfo')}
                 </Text>
               </Box>
             </ScrollView>
@@ -120,7 +113,7 @@ const knxScreen = () => {
 
           {/* Scroll Hint */}
           <Text className="text-center color-[#666666] font-medium text-sm mt-2">
-            Slinkite žemyn, kad pamatytumėte daugiau
+            {translate('scroll')}
           </Text>
 
           {/* "Daugiau informacijos" Button */}
@@ -131,7 +124,7 @@ const knxScreen = () => {
             onPress={handleMoreInfoPress}
           >
             <Text className="color-white font-semibold text-xl">
-              Daugiau informacijos
+            {translate('moreInfo')}
             </Text>
           </Button>
         </Box>

@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { ArrowLeft, Settings, Home, Grid, Cpu } from "lucide-react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { StatusBar, Image } from "react-native";
 
 import { Box } from "@/components/ui/box";
@@ -10,8 +10,12 @@ import { Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { TranslationContext } from '../../contexts/TranslationContext';
+
 
 const SysInfoScreen = () => {
+  const translationContext = useContext(TranslationContext);
+         const translate = translationContext ? translationContext.translate : () => '';
   return (
     <Box
       className="align-center flex-1 justify-center p-4"
@@ -20,7 +24,7 @@ const SysInfoScreen = () => {
       
       
       {/* Header with Back Button */}
-      <Box className="absolute left-0 right-0 top-0 p-4 shadow-sm">
+      <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={() => router.back()}>
             <Icon
@@ -48,10 +52,10 @@ const SysInfoScreen = () => {
         {/* Title and Subtitle */}
         <Box className="align-center justify-center p-4 mb-10">
           <Text className="text-center color-black font-bold text-3xl mb-2">
-            Sistemų informacija
+            {translate("systemInfo")}
           </Text>
           <Text className="text-center color-[#666666] font-medium text-lg">
-            Pasirinkite kategoriją
+            {translate("category")}
           </Text>
         </Box>
 
@@ -80,7 +84,7 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Home size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                  eNet Smart Home
+                  eNET
                 </Text>
               </HStack>
             </Button>
@@ -93,7 +97,7 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Grid size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                  JUNG Home
+                  JUNG
                 </Text>
               </HStack>
             </Button>
@@ -106,7 +110,7 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Settings size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                  KNX Valdymo sistema
+                  KNX
                 </Text>
               </HStack>
             </Button>

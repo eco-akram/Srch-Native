@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StatusBar, Image, View, Linking, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // For fade effect
 
@@ -11,9 +11,11 @@ import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
+import { TranslationContext } from '../../contexts/TranslationContext';
 
 const eNETScreen = () => {
-  // Function to handle the button press and open the URL
+ const translationContext = useContext(TranslationContext);
+     const translate = translationContext ? translationContext.translate : () => '';
   const handleMoreInfoPress = () => {
     const url =
       'https://www.jung.de/lt/9444/produktai/technologijos/jung-enet-smart-home/';
@@ -32,7 +34,7 @@ const eNETScreen = () => {
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
       {/* Header with Back Button */}
-      <Box className="absolute left-0 right-0 top-0 p-4 shadow-sm">
+      <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={() => router.back()}>
             <Icon
@@ -60,17 +62,17 @@ const eNETScreen = () => {
         {/* Title and Subtitle */}
         <Box className="align-center justify-center p-4 mb-10">
           <Text className="text-center color-black font-bold text-3xl mb-2">
-            eNet Smart Home
+            {translate('eNetInfoHeader')}
           </Text>
           <Text className="text-center color-[#666666] font-medium text-lg">
-            Elektroniniai sprendimai naujiems pastatams ir modernizavimui
+            {translate('sysInfoSub')}
           </Text>
         </Box>
 
         {/* Card with Content */}
         <Box className="justify-center rounded-xl bg-white p-6 shadow-md">
           <Text className="mb-4 text-center color-black font-semibold text-2xl">
-            Apie eNet Smart Home
+            {translate('abouteNet')}
           </Text>
 
           <View
@@ -90,16 +92,7 @@ const eNETScreen = () => {
             >
               <Box className="justify-center rounded-xl bg-[#F8F8F8] p-6 shadow-sm">
                 <Text className="text-center color-[#666666] font-medium text-lg">
-                  eNet Smart Home tai išmani namų automatikos sistema,
-                  skirta patogiam ir efektyviam apšvietimo, žaliuzių, šildymo
-                  bei kitų elektrinių prietaisų valdymui. Sistema veikia
-                  belaidžiu ryšiu, todėl ją galima lengvai integruoti į esamus
-                  namus be sudėtingų instaliacijos darbų. eNet Smart Home 
-                  leidžia valdyti įrenginius tiek vietoje, tiek nuotoliniu būdu
-                  per mobiliąją programėlę, suteikdama vartotojams daugiau
-                  komforto ir energijos taupymo galimybių. Dėl savo patikimumo
-                  ir lankstumo ši sistema yra puikus sprendimas moderniems bei
-                  funkcionaliems namams.
+                 {translate('eNetInfo')}
                 </Text>
               </Box>
             </ScrollView>
@@ -119,7 +112,7 @@ const eNETScreen = () => {
 
           {/* Scroll Hint */}
           <Text className="text-center color-[#666666] font-medium text-sm mt-2">
-            Slinkite žemyn, kad pamatytumėte daugiau
+          {translate('scroll')}
           </Text>
 
           {/* "Daugiau informacijos" Button */}
@@ -130,7 +123,7 @@ const eNETScreen = () => {
             onPress={handleMoreInfoPress}
           >
             <Text className="color-white font-semibold text-xl">
-              Daugiau informacijos
+              {translate('moreInfo')}
             </Text>
           </Button>
         </Box>
