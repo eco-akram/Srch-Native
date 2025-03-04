@@ -21,14 +21,17 @@ const CategoriesScreen = () => {
   // ✅ Expanded category state for dropdown effect
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
 
-  // ✅ Sync categories from `useSync` to Zustand on mount
   useEffect(() => {
     if (data.Categories && data.Categories.length > 0) {
-      setCategories(data.Categories);
+      // Compare existing categories with the new data
+      const areCategoriesEqual = JSON.stringify(categories) === JSON.stringify(data.Categories);
+      if (!areCategoriesEqual) {
+      
+        setCategories(data.Categories); // Only update if categories have changed
+      } 
     }
-  }, [data.Categories, setCategories]);
+  }, [data.Categories, categories, setCategories]);
 
-  // ✅ Toggle category expansion
   const toggleExpand = (id: number) => {
     setExpandedCategory(expandedCategory === id ? null : id);
   };
@@ -55,7 +58,7 @@ const CategoriesScreen = () => {
       className="align-center flex-1 justify-center p-4 pt-14"
       style={{ backgroundColor: '#FFFFFF' }}
     >
-      <StatusBar backgroundColor="#C2C2C2" barStyle="dark-content" />
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
       {/* Back Button */}
       <Box className="absolute left-2 right-0 top-2 p-4">
@@ -118,7 +121,9 @@ const CategoriesScreen = () => {
             >
               <Pressable
                 className="bg-white p-4"
-                onPress={() => toggleCategory(item.id)}
+                onPress={() => {
+                  toggleCategory(item.id);
+                }}
                 style={{
                   borderTopLeftRadius: 18,
                   borderTopRightRadius: 18,
