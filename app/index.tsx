@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Image, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Box } from '@/components/ui/box';
@@ -8,6 +8,7 @@ import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import LanguageModal from '@/components/LanguageModal';
 import { Text } from '@/components/ui/text';
+import { TranslationContext } from '../contexts/TranslationContext';
 
 import { Settings, Info, CircleArrowRight  } from 'lucide-react-native';
 
@@ -15,6 +16,8 @@ import { Settings, Info, CircleArrowRight  } from 'lucide-react-native';
 // Ensure this path is correct
 
 const HomeScreen = () => {
+  const translationContext = useContext(TranslationContext);
+  const translate = translationContext ? translationContext.translate : () => '';
   return (
     <Box
       className="align-center flex-1 justify-center p-4"
@@ -40,10 +43,10 @@ const HomeScreen = () => {
 
         <Box className="align-center justify-center p-4 mb-28">
           <Text className="text-center color-black font-bold text-3xl">
-            Welcome to JUNG
+          {translate('welcome')}
           </Text>
           <Text className="mb-2 text-center color-secondary font-medium text-lg">
-            Išmanu. Saugu. Lankstu
+          {translate('tagline')}
           </Text>
         </Box>
 
@@ -67,7 +70,7 @@ const HomeScreen = () => {
             >
               <CircleArrowRight  size={24} color="white" />
               <Text className="color-white font-semibold text-xl">
-                Atraskite sprendimą
+              {translate('discoverSolution')}
               </Text>
             </Button>
             <Button
@@ -78,7 +81,7 @@ const HomeScreen = () => {
             >
               <Settings size={24} color="black" />
               <Text className="color-black font-semibold text-xl">
-                Sistemų informacija
+              {translate('systemInfo')}
               </Text>
             </Button>
             <Button
@@ -89,7 +92,7 @@ const HomeScreen = () => {
             >
               <Info size={24} color="black" />
               <Text className="color-black font-semibold text-xl">
-                Informacija
+              {translate('info')}
               </Text>
             </Button>
           </VStack>
