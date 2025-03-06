@@ -11,8 +11,7 @@ import { useSync } from '@/hooks/useSync'; // ✅ Use global Sync Zustand store
 import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Import category selection store
 import { useAnswerStore } from '../../store/useAnswerStore'; // Import Zustand store
 import { TranslationContext } from '../../contexts/TranslationContext';
-import { ArrowLeft, CircleCheckBig, Icon } from 'lucide-react-native';
-import { Circle } from 'lucide-react-native';
+import { ArrowLeft } from 'lucide-react-native';
 
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
@@ -23,12 +22,12 @@ import { HStack } from '~/components/ui/hstack';
 const QuestionScreen = () => {
   const { id } = useLocalSearchParams(); 
   const router = useRouter();
-   const translationContext = useContext(TranslationContext);
-             const translate = translationContext ? translationContext.translate : () => '';
+  const translationContext = useContext(TranslationContext);
+  const translate = translationContext ? translationContext.translate : () => '';
 
   const { data } = useSync(); 
   const { selectedCategories } = useCategorySelectionStore(); 
-  const { setAnswer, clearAnswers } = useAnswerStore(); 
+  const { setAnswer, calculateRecommendation } = useAnswerStore(); 
   const [answers, setAnswers] = useState<any[]>([]);
 
   const [selectedAnswers, setSelectedAnswers] = useState<Set<string>>(new Set());
@@ -86,7 +85,7 @@ const QuestionScreen = () => {
   }, [id, data.Questions, data.Answers, selectedCategories]);
 
   // ✅ Handle answer selection (Navigate to next filtered question or summary)
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     console.log(`Number of selected answers: ${selectedAnswers.size}`);
 
     setAnswer(id as string, Array.from(selectedAnswers));
@@ -102,7 +101,8 @@ const QuestionScreen = () => {
         params: { id: nextQuestion.id },
       });
     } else {
-      clearAnswers(); 
+      console.log("🎯 Reached the end of the questionnaire, calculating results...");
+      await calculateRecommendation(); // ✅ Calculate the recommendation before navigating
       router.replace('/questionnaire/result'); 
     }
 
@@ -118,25 +118,22 @@ const QuestionScreen = () => {
   }
 
   return (
-    
     <Box className="flex-1 p-4 pt-14" style={{ backgroundColor: '#FFFFFF' }}>
-    <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-    {/* Back Arrow */}
-    <Box className="absolute left-2 right-0 top-2 p-4">
-      <HStack space="lg">
-        <Pressable onPress={() => router.back()}>
-          <ArrowLeft
-            size={35}
-            color="black"
-            style={{ width: 35, height: 35 }}
-          />
-        </Pressable>
-      </HStack>
-    </Box>
+      <Box className="absolute left-2 right-0 top-2 p-4">
+        <HStack space="lg">
+          <Pressable onPress={() => router.back()}>
+            <ArrowLeft
+              size={35}
+              color="black"
+              style={{ width: 35, height: 35 }}
+            />
+          </Pressable>
+        </HStack>
+      </Box>
 
-    <Box className="flex-row justify-between items-center pt-10 pb-11">
-      {/* Progress Bar */}
+      <Box className="flex-row justify-between items-center pt-10 pb-11">
         <Box className="flex-1">
           <Progress
             value={progress}
