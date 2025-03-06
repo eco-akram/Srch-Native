@@ -17,6 +17,29 @@ type AnswerStore = {
   calculateRecommendation: () => Promise<void>;
 };
 
+// Utility function for binary search with attempt counter
+const binarySearch = (
+  sortedArray: string[],
+  target: string,
+  attemptCounter: { count: number }
+): boolean => {
+  let left = 0;
+  let right = sortedArray.length - 1;
+
+  while (left <= right) {
+    attemptCounter.count++; // Increment attempt counter
+    const mid = Math.floor((left + right) / 2);
+    if (sortedArray[mid] === target) {
+      return true;
+    } else if (sortedArray[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  return false;
+};
+
 export const useAnswerStore = create<AnswerStore>((set, get) => ({
   answers: {},
   recommendedProduct: null,
@@ -33,8 +56,6 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
 
   calculateRecommendation: async () => {
     const userAnswers = Object.values(get().answers).flat().map(String);
-
-    // Use data directly from the useSync store
     const { data } = useSync.getState();
 
     const products: RecommendedProduct[] = Array.isArray(data["Products"])
@@ -81,42 +102,21 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
     let bestMatch: RecommendedProduct | null = null;
     let highestScore = 0;
     const scores: Record<string, number> = {};
-
-    // Resetting scores and answers to avoid residual data
     set({ answers: {} });
 
-    if (userAnswers.length === 0) {
-      console.log("⚠️ No answers selected, choosing product with the least associated answers");
-
-      let minAnswerCount = Infinity;
-
+    if (userAnswers.length > 0) {
       products.forEach((product: RecommendedProduct) => {
-        const matchingAnswers = productAnswers[product.name] || [];
-        const answerCount = matchingAnswers.length;
+        if (!product.name) return;
 
-        if (answerCount < minAnswerCount) {
-          minAnswerCount = answerCount;
-          bestMatch = product;
-        }
-      });
+        const matchingAnswers = (productAnswers[product.name] || []).sort();
+        const attemptCounter = { count: 0 };
 
-    } else {
-      products.forEach((product: RecommendedProduct) => {
-        if (!product.name) {
-          return;
-        }
-
-        const matchingAnswers = productAnswers[product.name] || [];
-        const matchedAnswers = matchingAnswers.filter((answer) =>
-          userAnswers.includes(answer)
+        const matchedAnswers = userAnswers.filter((answer) =>
+          binarySearch(matchingAnswers, answer, attemptCounter)
         );
 
         const score = matchedAnswers.length;
         scores[product.name] = score;
-
-        console.log(
-          `🟢 Comparing User Answers: ${userAnswers} with Product "${product.name}" Answers: ${matchingAnswers}. Matched: ${matchedAnswers}`
-        );
 
         if (score > highestScore) {
           highestScore = score;
@@ -126,7 +126,6 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
     }
 
     set({ recommendedProduct: bestMatch });
-
     console.log("🏆 Recommended Product:", bestMatch);
     console.log("📊 Scores for all products:", scores);
   },
