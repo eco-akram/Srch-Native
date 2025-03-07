@@ -3,153 +3,114 @@ import { ArrowLeft, Download, Settings, Mail } from 'lucide-react-native';
 import React, { useContext } from 'react';
 import { StatusBar, Image, View, Linking, Dimensions } from 'react-native';
 import { TranslationContext } from '../../contexts/TranslationContext';
+import { useAnswerStore } from '../../store/useAnswerStore';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
-import { VStack } from '@/components/ui/vstack';
 
 const ResultScreen = () => {
   const translationContext = useContext(TranslationContext);
-               const translate = translationContext ? translationContext.translate : () => '';
-  // Pavyzdinė pasirinktos sistemos informacija
-  const selectedSystem = {
-    name: 'JUNG eNet Smart Home',
-    image: require('../../assets/jung-enet-smart-home.jpg'), // Pakeiskite į savo nuotrauką
-    description: 'JUNG eNet Smart Home sistema leidžia valdyti apšvietimą, šildymą ir kitas namų sistemas per išmanųjį įrenginį arba mobiliąją programėlę.',
-    contactPage: 'https://www.jung.de/lt/kontaktai', // Pakeiskite į tinkamą nuorodą
-  };
+  const translate = translationContext ? translationContext.translate : () => '';
 
-  // Ekrano plotis
-  const screenWidth = Dimensions.get('window').width;
+  const { recommendedProduct } = useAnswerStore();
 
-  // Funkcija PDF parsisiuntimui
+  if (!recommendedProduct) {
+    return (
+      <Box className="flex-1 justify-center items-center">
+        <Text className="font-bold text-xl color-black">
+          No Recommendation Available
+        </Text>
+      </Box>
+    );
+  }
+
   const handleDownloadPDF = () => {
-    // Čia galite pridėti PDF generavimo ir parsisiuntimo logiką
-    alert('Rezultatai sėkmingai parsisiųsti PDF formatu!');
+    alert('Results downloaded successfully as PDF!');
   };
 
-  // Funkcija sistemos konfigūracijai
   const handleSystemConfiguration = () => {
-    router.push('/'); // Nukreipimas į sistemos konfigūracijos puslapį
+    router.push('/');
   };
 
-  // Funkcija susisiekti su tiekėju
   const handleContactSupplier = () => {
-    Linking.openURL(selectedSystem.contactPage).catch((err) =>
-      console.error('Nepavyko atidaryti nuorodos: ', err),
+    Linking.openURL('https://www.jung.de/lt/kontaktai').catch((err) =>
+      console.error('Failed to open link: ', err)
     );
   };
 
-  // Funkcija grįžti į pagrindinį puslapį
   const handleGoBackToHome = () => {
-    router.push('/'); // Nukreipimas į pagrindinį puslapį
+    router.push('/');
   };
 
   return (
-    <Box
-      className="align-center flex-1 justify-center p-4"
-      style={{ backgroundColor: '#F8F8F8' }} // Fono spalva
-    >
+    <Box className="align-center flex-1 justify-center p-4" style={{ backgroundColor: '#F8F8F8' }}>
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
-      {/* Viršutinė dalis su atgal mygtuku */}
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={() => router.back()}>
-            <Icon
-              as={ArrowLeft}
-              size="xl"
-              color="black"
-              style={{ width: 35, height: 35 }}
-            />
+            <Icon as={ArrowLeft} size="xl" color="black" style={{ width: 35, height: 35 }} />
           </Pressable>
         </HStack>
       </Box>
 
       <Box className="align-center justify-center p-4">
-        {/* Pasirinktos sistemos nuotrauka */}
         <View
           style={{
-            width: '100%', // Plotis be kraštų
+            width: '100%',
             marginBottom: 20,
-            justifyContent: 'center', // Centruoja nuotrauką vertikaliai
-            alignItems: 'center', // Centruoja nuotrauką horizontaliai
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <Image
-            source={selectedSystem.image}
+            source={require('../../assets/jung-enet-smart-home.jpg')}
             style={{
               width: '100%',
-              height: 200, // Fiksuotas aukštis
-              resizeMode: 'contain', // Nuotrauka bus pilnai matoma
+              height: 200,
+              resizeMode: 'contain',
             }}
           />
         </View>
 
-        {/* Pasirinktos sistemos pavadinimas ir aprašymas */}
         <Text className="text-center color-black font-bold text-3xl mb-4">
-          {selectedSystem.name}
+          {recommendedProduct.name}
         </Text>
         <Text className="text-center color-[#666666] font-medium text-lg mb-10">
-          {selectedSystem.description}
+          {recommendedProduct.description}
         </Text>
 
-        {/* Mygtukas "Parsisiųsti rezultatus PDF formatu" */}
-        <Button
-          className="bg-[#18181B] rounded-xl mb-4"
-          variant="outline"
-          size="xl"
-          onPress={handleDownloadPDF}
-        >
+        <Button className="bg-[#18181B] rounded-xl mb-4" variant="outline" size="xl" onPress={handleDownloadPDF}>
           <Download size={24} color="white" />
           <Text className="color-white font-semibold text-xl ml-2">
-            {translate("pdf")}
+            {translate('pdf')}
           </Text>
         </Button>
 
-        {/* Mygtukas "Sistemos konfigūracija" */}
-        <Button
-          className="bg-white rounded-xl mb-4 border border-[#EAEAEA]"
-          variant="outline"
-          size="xl"
-          onPress={handleSystemConfiguration}
-        >
+        <Button className="bg-white rounded-xl mb-4 border border-[#EAEAEA]" variant="outline" size="xl" onPress={handleSystemConfiguration}>
           <Settings size={24} color="black" />
           <Text className="color-black font-semibold text-xl ml-2">
-          {translate("config")}
+            {translate('config')}
           </Text>
         </Button>
 
-        {/* Tekstas su nuoroda į tiekėjo kontaktų puslapį */}
         <Text className="text-center color-[#666666] font-medium text-lg mb-4">
-        {translate("contactInfo")}
+          {translate('contactInfo')}
         </Text>
 
-        {/* Mygtukas "Susisiekti" */}
-        <Button
-          className="bg-[#18181B] rounded-xl mb-4"
-          variant="outline"
-          size="xl"
-          onPress={handleContactSupplier}
-        >
+        <Button className="bg-[#18181B] rounded-xl mb-4" variant="outline" size="xl" onPress={handleContactSupplier}>
           <Mail size={24} color="white" />
           <Text className="color-white font-semibold text-xl ml-2">
-            {translate("contactSupplier")}
+            {translate('contactSupplier')}
           </Text>
         </Button>
 
-        {/* Mygtukas "Grįžti atgal į pagrindinį" */}
-        <Button
-          className="bg-[#18181B] rounded-xl"
-          variant="outline"
-          size="xl"
-          onPress={handleGoBackToHome}
-        >
+        <Button className="bg-[#18181B] rounded-xl" variant="outline" size="xl" onPress={handleGoBackToHome}>
           <Text className="color-white font-semibold text-xl">
-           {translate("backToMain")}
+            {translate('backToMain')}
           </Text>
         </Button>
       </Box>
