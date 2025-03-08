@@ -12,8 +12,11 @@ type RecommendedProduct = {
 type AnswerStore = {
   answers: Record<string, string[]>;
   recommendedProduct: RecommendedProduct | null;
+  lastQuestionId: string | null;
   setAnswer: (questionId: string, selectedAnswers: string[]) => void;
+  getAnswer: (questionId: string) => string[];
   clearAnswers: () => void;
+  setLastQuestionId: (id: string) => void;
   calculateRecommendation: () => Promise<void>;
 };
 
@@ -27,7 +30,7 @@ const binarySearch = (
   let right = sortedArray.length - 1;
 
   while (left <= right) {
-    attemptCounter.count++; // Increment attempt counter
+    attemptCounter.count++;
     const mid = Math.floor((left + right) / 2);
     if (sortedArray[mid] === target) {
       return true;
@@ -43,34 +46,58 @@ const binarySearch = (
 export const useAnswerStore = create<AnswerStore>((set, get) => ({
   answers: {},
   recommendedProduct: null,
+  lastQuestionId: null,
 
+  // Store selected answers for a given question
   setAnswer: (questionId, selectedAnswers) =>
     set((state) => ({
       answers: { ...state.answers, [questionId]: selectedAnswers },
     })),
 
-  clearAnswers: () => {
-    console.log("🧹 Clearing all answers and recommended product");
-    set({ answers: {}, recommendedProduct: null });
+  // Retrieve selected answers for a specific question
+  getAnswer: (questionId: string) => {
+    return get().answers[questionId] || [];
   },
 
+  // Clear all answers and the recommended product
+  clearAnswers: () => {
+    console.log("🧹 Clearing all selected answers and recommended product");
+    set({ answers: {}, recommendedProduct: null, lastQuestionId: null });
+  },
+
+  // Store the last question ID to facilitate back navigation
+  setLastQuestionId: (id) => set({ lastQuestionId: id }),
+
+  // Calculate the recommended product based on user's answers
   calculateRecommendation: async () => {
+    console.log("🔄 Starting recommendation calculation...");
+
     const userAnswers = Object.values(get().answers).flat().map(String);
     const { data } = useSync.getState();
 
+    // Extract products from the data
     const products: RecommendedProduct[] = Array.isArray(data["Products"])
       ? data["Products"].map((product: any): RecommendedProduct => ({
           productId: product.id ?? 0,
-          name: product.productName ?? "Unknown Product",
-          description: product.productDescription ?? "No description available",
+          name:
+            product.productName ||
+            product.ProductName ||
+            product.name ||
+            "Unknown Product",
+          description:
+            product.productDescription ||
+            product.description ||
+            "No description available",
         }))
       : [];
 
     if (products.length === 0) {
+      console.error("❌ No products available in the data source.");
       set({ recommendedProduct: null });
       return;
     }
 
+    // Retrieve the product-answer mapping
     const rawProductAnswers: any[] = Array.isArray(data["Product_Answers"])
       ? data["Product_Answers"]
       : [];
@@ -101,9 +128,11 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
 
     let bestMatch: RecommendedProduct | null = null;
     let highestScore = 0;
-    const scores: Record<string, number> = {};
-    set({ answers: {} });
+    let minRelatedAnswers = Infinity;
 
+    const scores: Record<string, number> = {};
+
+    // Calculate the best matching product based on scores
     if (userAnswers.length > 0) {
       products.forEach((product: RecommendedProduct) => {
         if (!product.name) return;
@@ -118,8 +147,25 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
         const score = matchedAnswers.length;
         scores[product.name] = score;
 
-        if (score > highestScore) {
+        if (
+          score > highestScore ||
+          (score === highestScore &&
+            (productAnswers[product.name]?.length || 0) < minRelatedAnswers)
+        ) {
           highestScore = score;
+          minRelatedAnswers = productAnswers[product.name]?.length || 0;
+          bestMatch = product;
+        }
+      });
+    } else {
+      // Select the product with the fewest associated answers as a fallback
+      products.forEach((product: RecommendedProduct) => {
+        if (!product.name) return;
+
+        const relatedAnswersCount = productAnswers[product.name]?.length || 0;
+
+        if (relatedAnswersCount < minRelatedAnswers) {
+          minRelatedAnswers = relatedAnswersCount;
           bestMatch = product;
         }
       });
