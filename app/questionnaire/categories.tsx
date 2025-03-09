@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { router } from 'expo-router';
 import { ArrowLeft, ChevronDown } from 'lucide-react-native';
 import { StatusBar, Image, FlatList, Animated } from 'react-native';
 
-import { useSync } from '@/hooks/useSync'; // ✅ Fetch Categories globally
-import { useCategorySelectionStore } from '../../store/useCategorySelectionStore'; // ✅ Zustand store for category selection
+import { useSync } from '@/hooks/useSync';
+import { useCategorySelectionStore } from '../../store/useCategorySelectionStore';
 import { TranslationContext } from '../../contexts/TranslationContext';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
@@ -14,34 +14,38 @@ import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
 
 const CategoriesScreen = () => {
-  const { data } = useSync(); // ✅ Fetch categories from Zustand
+  const { data } = useSync();
   const { categories, setCategories, selectedCategories, toggleCategory } =
-    useCategorySelectionStore(); // ✅ Zustand store
-    const translationContext = useContext(TranslationContext);
-         const translate = translationContext ? translationContext.translate : () => '';
+    useCategorySelectionStore();
+  const translationContext = useContext(TranslationContext);
+  const translate = translationContext ? translationContext.translate : () => '';
 
-  // ✅ Expanded category state for dropdown effect
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (data.Categories && data.Categories.length > 0) {
-      // Compare existing categories with the new data
       const areCategoriesEqual = JSON.stringify(categories) === JSON.stringify(data.Categories);
       if (!areCategoriesEqual) {
-      
-        setCategories(data.Categories); // Only update if categories have changed
-      } 
+        setCategories(data.Categories);
+      }
     }
-  }, [data.Categories, categories, setCategories]);
+  }, [data.Categories, setCategories]);
 
   const toggleExpand = (id: number) => {
     setExpandedCategory(expandedCategory === id ? null : id);
   };
 
-  // ✅ Navigate to questions page while preserving selected categories
   const goToQuestionsScreen = () => {
     if (selectedCategories.size === 0) {
-      alert(translate("errOneCategory"));
+      alert(translate('errOneCategory'));
       return;
     }
     router.push('/questionnaire/questions');
@@ -62,7 +66,6 @@ const CategoriesScreen = () => {
     >
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-      {/* Back Button */}
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={() => router.back()}>
@@ -76,7 +79,6 @@ const CategoriesScreen = () => {
         </HStack>
       </Box>
 
-      {/* Logo */}
       <Image
         source={require('../../assets/JUNG.png')}
         style={{
@@ -99,7 +101,6 @@ const CategoriesScreen = () => {
         {translate('chooseCategory')}
       </Text>
 
-      {/* ✅ Category List */}
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id.toString()}
@@ -107,7 +108,6 @@ const CategoriesScreen = () => {
           const isSelected = selectedCategories.has(item.id);
 
           return (
-            
             <Animated.View
               style={{
                 borderWidth: 2,
@@ -124,9 +124,7 @@ const CategoriesScreen = () => {
             >
               <Pressable
                 className="bg-white p-4"
-                onPress={() => {
-                  toggleCategory(item.id);
-                }}
+                onPress={() => toggleCategory(item.id)}
                 style={{
                   borderTopLeftRadius: 18,
                   borderTopRightRadius: 18,
@@ -181,7 +179,6 @@ const CategoriesScreen = () => {
         }}
       />
 
-      {/* Next Button */}
       <Button
         className="bg-[#18181B] rounded-xl mt-3"
         variant="outline"

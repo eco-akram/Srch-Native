@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { ArrowLeft, Download, Settings, Mail } from 'lucide-react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StatusBar, Image, View, Linking, Alert } from 'react-native';
 import { TranslationContext } from '../../contexts/TranslationContext';
 import { useAnswerStore } from '../../store/useAnswerStore';
@@ -16,9 +16,18 @@ const ResultScreen = () => {
   const translationContext = useContext(TranslationContext);
   const translate = translationContext ? translationContext.translate : () => '';
 
-  const { recommendedProduct, clearAnswers, lastQuestionId } = useAnswerStore();
+  const { recommendedProduct, clearAnswers, lastQuestionId } = useAnswerStore(
+    (state) => ({
+      recommendedProduct: state.recommendedProduct,
+      clearAnswers: state.clearAnswers,
+      lastQuestionId: state.lastQuestionId,
+    })
+  );
+
+  const [isNavigating, setIsNavigating] = useState(false);
 
   if (!recommendedProduct) {
+    console.log('No recommended product found');
     return (
       <Box className="flex-1 justify-center items-center">
         <Text className="font-bold text-xl color-black">
@@ -30,8 +39,10 @@ const ResultScreen = () => {
 
   const handleDownloadPDF = async () => {
     try {
+      console.log('Attempting to generate PDF...');
       if (recommendedProduct) {
         await generatePDF(recommendedProduct.name, recommendedProduct.description);
+        console.log('PDF generated successfully');
       } else {
         Alert.alert('Error', 'No recommended product available for PDF generation.');
       }
@@ -42,34 +53,44 @@ const ResultScreen = () => {
   };
 
   const handleSystemConfiguration = () => {
+    console.log('Navigating to system configuration...');
     clearAnswers();
-    router.push('/');
+    router.replace('/');
   };
 
   const handleContactSupplier = () => {
+    console.log('Opening supplier contact page...');
     Linking.openURL('https://www.jung.de/lt/kontaktai').catch((err) =>
       console.error('Failed to open link: ', err)
     );
   };
 
-  const handleGoBackToLastQuestion = () => {
-    if (lastQuestionId) {
-      router.push(`/questionnaire/${lastQuestionId}`);
-    } else {
-      Alert.alert('Error', 'No previous question found.');
+  const handleGoBackToLastQuestion = async () => {
+    try {
+      if (!isNavigating && lastQuestionId) {
+        console.log(`Navigating back to question ID: ${lastQuestionId}`);
+        setIsNavigating(true);
+        await router.replace(`/questionnaire/${lastQuestionId}`);
+        setIsNavigating(false);
+      } else {
+        Alert.alert('Error', 'No previous question found.');
+      }
+    } catch (error) {
+      console.error('Error navigating to the last question:', error);
+      setIsNavigating(false);
     }
   };
 
   const handleGoBackToHome = () => {
-    clearAnswers(); // Clear all answers and recommended product
-    router.push('/');
+    console.log('Navigating back to the home page...');
+    clearAnswers();
+    router.replace('/');
   };
 
   return (
     <Box className="align-center flex-1 justify-center p-4" style={{ backgroundColor: '#F8F8F8' }}>
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
-      {/* Back Arrow to Navigate to the Previous Question */}
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={handleGoBackToLastQuestion}>
@@ -79,7 +100,6 @@ const ResultScreen = () => {
       </Box>
 
       <Box className="align-center justify-center p-4">
-        {/* Product Image */}
         <View
           style={{
             width: '100%',
@@ -98,7 +118,6 @@ const ResultScreen = () => {
           />
         </View>
 
-        {/* Product Information */}
         <Text className="text-center color-black font-bold text-3xl mb-4">
           {recommendedProduct.name}
         </Text>
@@ -106,7 +125,6 @@ const ResultScreen = () => {
           {recommendedProduct.description}
         </Text>
 
-        {/* Button to Download PDF */}
         <Button
           className="bg-[#18181B] rounded-xl mb-4"
           variant="outline"
@@ -119,7 +137,6 @@ const ResultScreen = () => {
           </Text>
         </Button>
 
-        {/* Button for System Configuration */}
         <Button
           className="bg-white rounded-xl mb-4 border border-[#EAEAEA]"
           variant="outline"
@@ -132,12 +149,10 @@ const ResultScreen = () => {
           </Text>
         </Button>
 
-        {/* Contact Information */}
         <Text className="text-center color-[#666666] font-medium text-lg mb-4">
           {translate('contactInfo')}
         </Text>
 
-        {/* Button to Contact Supplier */}
         <Button
           className="bg-[#18181B] rounded-xl mb-4"
           variant="outline"
@@ -150,7 +165,6 @@ const ResultScreen = () => {
           </Text>
         </Button>
 
-        {/* Button to Go Back to the Home Page */}
         <Button
           className="bg-[#18181B] rounded-xl"
           variant="outline"
