@@ -52,9 +52,8 @@ const ResultScreen = () => {
     }
   };
 
-  const handleSystemConfiguration = () => {
+  const repeatQuestionnaire = () => {
     console.log('Navigating to system configuration...');
-    clearAnswers();
     router.push('/questionnaire/categories');
   };
 
@@ -141,7 +140,7 @@ const ResultScreen = () => {
           className="bg-white rounded-xl mb-4 border border-[#EAEAEA]"
           variant="outline"
           size="xl"
-          onPress={handleSystemConfiguration}
+          onPress={repeatQuestionnaire}
         >
           <List size={24} color="black" />
           <Text className="color-black font-semibold text-xl ml-2">
