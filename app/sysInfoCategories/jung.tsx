@@ -19,7 +19,7 @@ const jungScreen = () => {
   // Function to handle the button press and open the URL
   const handleMoreInfoPress = () => {
     const url =
-      'https://www.jung.de/lt/600/sprendimai/protingos-sistemos/?gad_source=1&gclid=Cj0KCQiAoJC-BhCSARIsAPhdfSjk8mRJYchXbvkYNjRgPrRc61hDfWwGkh3X0id03eQ1ptT6pyyqCfUaAhFrEALw_wcB';
+      'https://www.jung.de/lt/15929/produktai/nauji-produktai/jung-home/';
 
     // Open the URL using the device's default browser picker
     Linking.openURL(url).catch((err) =>

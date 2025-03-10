@@ -19,7 +19,7 @@ const knxScreen = () => {
   // Function to handle the button press and open the URL
   const handleMoreInfoPress = () => {
     const url =
-      'https://www.jung.de/lt/820/produktai/technologijos/knx-sistema/?gad_source=1&gclid=Cj0KCQiAoJC-BhCSARIsAPhdfSg2PoYQ_Xh2ds_s1IURYSoicPQo9oR4Ut8gqc8CdDV_5oQ6QCflMQMaAjUOEALw_wcB';
+      'https://www.jung.de/lt/600/sprendimai/protingos-sistemos/';
 
     // Open the URL using the device's default browser picker
     Linking.openURL(url).catch((err) =>

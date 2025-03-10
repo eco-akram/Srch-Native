@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { ArrowLeft, Download, Settings, Mail } from 'lucide-react-native';
+import { ArrowLeft, Download, List, Mail } from 'lucide-react-native';
 import React, { useContext, useState } from 'react';
 import { StatusBar, Image, View, Linking, Alert } from 'react-native';
 import { TranslationContext } from '../../contexts/TranslationContext';
@@ -55,7 +55,7 @@ const ResultScreen = () => {
   const handleSystemConfiguration = () => {
     console.log('Navigating to system configuration...');
     clearAnswers();
-    router.replace('/');
+    router.push('/questionnaire/categories');
   };
 
   const handleContactSupplier = () => {
@@ -143,7 +143,7 @@ const ResultScreen = () => {
           size="xl"
           onPress={handleSystemConfiguration}
         >
-          <Settings size={24} color="black" />
+          <List size={24} color="black" />
           <Text className="color-black font-semibold text-xl ml-2">
             {translate('config')}
           </Text>

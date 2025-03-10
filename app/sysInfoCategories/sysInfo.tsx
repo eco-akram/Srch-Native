@@ -84,7 +84,7 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Home size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                  eNET
+                eNet SMART HOME
                 </Text>
               </HStack>
             </Button>
@@ -97,7 +97,7 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Grid size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                  JUNG
+                JUNG HOME
                 </Text>
               </HStack>
             </Button>
@@ -110,7 +110,7 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Settings size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                  KNX
+                KNX valdymo sistema
                 </Text>
               </HStack>
             </Button>
