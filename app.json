@@ -1,15 +1,12 @@
 {
   "expo": {
+    "owner": "akrokk-org",
     "name": "srch-native",
     "slug": "srch-native",
     "version": "1.0.0",
     "scheme": "srch-native",
     "newArchEnabled": true,
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -37,11 +34,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#F1EBE5"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.akrokk.srchnative"
     },
     "android": {
       "adaptiveIcon": {
@@ -59,6 +55,9 @@
       "eas": {
         "projectId": "a8e90174-8f26-4211-8832-d4ce6fa43d50"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }
