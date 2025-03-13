@@ -184,7 +184,7 @@ function CategoriesScreen() {
       alert(translate('errOneCategory'));
       return;
     }
-    router.push('/questionnaire/questions');
+    router.replace('/questionnaire/questions');
   };
 
   // 📝 If categories are empty, show a loading text

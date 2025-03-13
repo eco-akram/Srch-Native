@@ -106,20 +106,23 @@ const QuestionScreen = () => {
 
   const handlePreviousQuestion = () => {
     setAnswer(id as string, Array.from(selectedAnswers));
-
+  
     const prevIndex = filteredQuestions.findIndex(
       (q) => q.id === Number(id)
     ) - 1;
-
+  
     if (prevIndex >= 0) {
+      // ✅ Go to the previous question
       router.replace({
         pathname: '/questionnaire/[id]',
         params: { id: filteredQuestions[prevIndex].id },
       });
     } else {
-      router.back();
+      // ✅ If there are no previous questions, go to the Categories page
+      router.replace('/questionnaire/categories');
     }
   };
+  
 
   const renderAnswerItem = useCallback(({ item }: { item: any }) => (
     <Pressable
