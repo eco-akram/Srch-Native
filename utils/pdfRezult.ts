@@ -3,6 +3,8 @@ import * as Print from 'expo-print';
 import { Platform, Alert } from 'react-native';
 import { useSync } from '../hooks/useSync';
 import { useAnswerStore } from '../store/useAnswerStore';
+import { WarningToast } from '@/components/WarningToast';
+import { useToast, Toast } from '@/components/ui/toast';
 
 export const generatePDF = async (name: string, description: string) => {
   try {
@@ -120,11 +122,10 @@ export const generatePDF = async (name: string, description: string) => {
           await FileSystem.writeAsStringAsync(fileUri, base64Data, {
             encoding: FileSystem.EncodingType.Base64,
           });
-
-          Alert.alert('PDF Downloaded', 'The PDF file has been saved to your Downloads folder.');
+          console.log('✅ PDF file generated successfully:', fileUri);
           return;
         } else {
-          Alert.alert('Permission Denied', 'Cannot access the Downloads folder.');
+          console.log('❌ Storage Access Framework permission not granted');
           return;
         }
       }
@@ -134,9 +135,9 @@ export const generatePDF = async (name: string, description: string) => {
         to: fileUri,
       });
 
-      Alert.alert('PDF Generated', 'Your PDF file has been saved successfully!');
+      console.log('✅ PDF file generated successfully:', fileUri);
     } else {
-      Alert.alert('Error', 'Failed to generate the PDF file.');
+      console.log('❌ PDF generation failed');
     }
   } catch (error) {
     console.error('❌ Error generating PDF:', error);

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { router } from 'expo-router';
-import { ArrowLeft, ChevronDown } from 'lucide-react-native';
+import { ArrowLeft, ChevronDown, AlertTriangle } from 'lucide-react-native';
 import { StatusBar, Image, FlatList, Animated } from 'react-native';
 
 import { useSync } from '@/hooks/useSync';
@@ -12,9 +12,12 @@ import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
+import { useToast, Toast } from '@/components/ui/toast';
+import { WarningToast } from '@/components/WarningToast';
 
 const CategoriesScreen = () => {
   const { data } = useSync();
+  const toast = useToast();
   const { categories, setCategories, selectedCategories, toggleCategory } =
     useCategorySelectionStore();
   const translationContext = useContext(TranslationContext);
@@ -45,7 +48,10 @@ const CategoriesScreen = () => {
 
   const goToQuestionsScreen = () => {
     if (selectedCategories.size === 0) {
-      alert(translate('errOneCategory'));
+      toast.show({
+        placement: "top",
+        render: () => <WarningToast message={translate('chooseCategory')} />,
+      });
       return;
     }
     router.push('/questionnaire/questions');

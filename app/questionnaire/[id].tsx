@@ -12,7 +12,6 @@ import { useCategorySelectionStore } from '../../store/useCategorySelectionStore
 import { useAnswerStore } from '../../store/useAnswerStore';
 import { TranslationContext } from '../../contexts/TranslationContext';
 import { ArrowLeft } from 'lucide-react-native';
-
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
@@ -23,14 +22,19 @@ const QuestionScreen = () => {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const translationContext = useContext(TranslationContext);
-  const translate = translationContext ? translationContext.translate : () => '';
+  const translate = translationContext
+    ? translationContext.translate
+    : () => '';
 
   const { data } = useSync();
   const { selectedCategories } = useCategorySelectionStore();
-  const { setAnswer, getAnswer, calculateRecommendation, setLastQuestionId } = useAnswerStore();
-  
+  const { setAnswer, getAnswer, calculateRecommendation, setLastQuestionId } =
+    useAnswerStore();
+
   const [answers, setAnswers] = useState<any[]>([]);
-  const [selectedAnswers, setSelectedAnswers] = useState<Set<string>>(new Set());
+  const [selectedAnswers, setSelectedAnswers] = useState<Set<string>>(
+    new Set(),
+  );
   const [filteredQuestions, setFilteredQuestions] = useState<any[]>([]);
   const [question, setQuestion] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -57,41 +61,50 @@ const QuestionScreen = () => {
     setLoading(true);
 
     const questionsForSelectedCategories = data.Questions.filter((q) =>
-      selectedCategories.has(q.categoryId)
+      selectedCategories.has(q.categoryId),
     );
 
     setFilteredQuestions(questionsForSelectedCategories);
 
     const currentQuestion = questionsForSelectedCategories.find(
-      (q) => q.id === Number(id)
+      (q) => q.id === Number(id),
     );
 
     if (currentQuestion) {
       setQuestion(currentQuestion);
 
       const questionAnswers = data.Answers.filter(
-        (a) => a.questionsId === Number(id)
+        (a) => a.questionsId === Number(id),
       );
       setAnswers(questionAnswers);
 
       // Restore previously selected answers from the store
       const savedAnswers = getAnswer(id as string);
       setSelectedAnswers(new Set(savedAnswers));
-      console.log(`🌀 Restoring saved answers for question ${id}:`, savedAnswers);
+      console.log(
+        `🌀 Restoring saved answers for question ${id}:`,
+        savedAnswers,
+      );
 
       // Set the last question ID in the store for proper back navigation
       setLastQuestionId(id.toString());
     }
 
     setLoading(false);
-  }, [id, data.Questions, data.Answers, selectedCategories, getAnswer, setLastQuestionId]);
+  }, [
+    id,
+    data.Questions,
+    data.Answers,
+    selectedCategories,
+    getAnswer,
+    setLastQuestionId,
+  ]);
 
   const handleNextQuestion = async () => {
     setAnswer(id as string, Array.from(selectedAnswers));
 
-    const nextIndex = filteredQuestions.findIndex(
-      (q) => q.id === Number(id)
-    ) + 1;
+    const nextIndex =
+      filteredQuestions.findIndex((q) => q.id === Number(id)) + 1;
 
     if (nextIndex < filteredQuestions.length) {
       router.replace({
@@ -107,9 +120,8 @@ const QuestionScreen = () => {
   const handlePreviousQuestion = () => {
     setAnswer(id as string, Array.from(selectedAnswers));
 
-    const prevIndex = filteredQuestions.findIndex(
-      (q) => q.id === Number(id)
-    ) - 1;
+    const prevIndex =
+      filteredQuestions.findIndex((q) => q.id === Number(id)) - 1;
 
     if (prevIndex >= 0) {
       router.replace({
@@ -121,23 +133,26 @@ const QuestionScreen = () => {
     }
   };
 
-  const renderAnswerItem = useCallback(({ item }: { item: any }) => (
-    <Pressable
-      className="bg-white rounded-xl mt-3 p-2 px-2 border-[#18181B] border"
-      style={{
-        backgroundColor: selectedAnswers.has(item.id) ? '#18181B' : '#FFFFFF',
-      }}
-      onPress={() => handleAnswerSelection(item.id)}
-    >
-      <Text
-        className={`font-semibold text-xl text-center ${
-          selectedAnswers.has(item.id) ? 'text-white' : 'text-black'
-        }`}
+  const renderAnswerItem = useCallback(
+    ({ item }: { item: any }) => (
+      <Pressable
+        className="bg-white rounded-xl mt-3 p-2 px-2 border-[#18181B] border"
+        style={{
+          backgroundColor: selectedAnswers.has(item.id) ? '#18181B' : '#FFFFFF',
+        }}
+        onPress={() => handleAnswerSelection(item.id)}
       >
-        {item.answerText}
-      </Text>
-    </Pressable>
-  ), [selectedAnswers, handleAnswerSelection]);
+        <Text
+          className={`font-semibold text-xl text-center ${
+            selectedAnswers.has(item.id) ? 'text-white' : 'text-black'
+          }`}
+        >
+          {item.answerText}
+        </Text>
+      </Pressable>
+    ),
+    [selectedAnswers, handleAnswerSelection],
+  );
 
   return loading ? (
     <Box className="flex-1 justify-center items-center">
@@ -150,7 +165,11 @@ const QuestionScreen = () => {
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={handlePreviousQuestion}>
-            <ArrowLeft size={35} color="black" style={{ width: 35, height: 35 }} />
+            <ArrowLeft
+              size={35}
+              color="black"
+              style={{ width: 35, height: 35 }}
+            />
           </Pressable>
         </HStack>
       </Box>
@@ -171,7 +190,10 @@ const QuestionScreen = () => {
         </Text>
       </Box>
 
-      <Text className="font-bold text-center text-3xl text-black mt-4" style={{ marginBottom: 55 }}>
+      <Text
+        className="font-bold text-center text-3xl text-black mt-4"
+        style={{ marginBottom: 55 }}
+      >
         {question?.questionText}
       </Text>
 
@@ -184,6 +206,9 @@ const QuestionScreen = () => {
         windowSize={5}
         removeClippedSubviews
       />
+      <Text className="text-center text-gray-600 mt-4">
+      {translate("noButtonText")}
+      </Text>
 
       <Button
         className="bg-[#18181B] rounded-xl mt-3"
@@ -192,7 +217,7 @@ const QuestionScreen = () => {
         onPress={handleNextQuestion}
       >
         <Text className="color-white font-semibold text-xl">
-          {translate("next")}
+          {translate('next')}
         </Text>
       </Button>
     </Box>

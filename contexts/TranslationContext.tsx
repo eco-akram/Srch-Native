@@ -50,6 +50,11 @@ const translations: Translations = {
     contactSupplier:"Susisiekti su tiekėju",
     backToMain:"Grįžti atgal į pagrindinį puslapį",
     errOneCategory:"Pasirinkite bent vieną kategoriją.",
+    pdfDownloaded:"PDF atsisiųstas PDF failas buvo išsaugotas jūsų Atsisiuntimų aplanke.",
+    noButtonText:"Jeigu atsakymas į šį klausimą yra 'ne', prašome tęsti, paspausdami mygtuką 'Toliau'.",
+    pdfProductErr:"Klaida: Rekomenduojamas produktas nėra prieinamas PDF generavimui.",
+    pdfSuccess:"PDF sukurtas sėkmingai!",
+    pdfErrCreating:"Klaida: Įvyko klaida generuojant PDF."
   },
   en: {
     welcome: 'Welcome to JUNG',
@@ -90,6 +95,11 @@ const translations: Translations = {
     contactSupplier:"Contact supplier",
     backToMain:"Back to main page",
     errOneCategory:"Choose at least one category.",
+    pdfDownloaded:"PDF Downloaded the PDF file has been saved to your Downloads folder.",
+    noButtonText:"If the answer to this question is 'no', please continue by pressing the 'Next' button.",
+    pdfProductErr:"Error: No recommended product available for PDF generation.",
+    pdfSuccess:"PDF created successfully!",
+    pdfErrCreating:"Error: An error occurred while generating the PDF."
   },
   de: {
     welcome: 'Willkommen bei JUNG',
@@ -130,6 +140,11 @@ const translations: Translations = {
     contactSupplier:"Lieferant kontaktieren",
     backToMain:"Zurück zur Hauptseite",
     errOneCategory:"Wählen Sie mindestens eine Kategorie.",
+    pdfDownloaded:"PDF heruntergeladen, die PDF-Datei wurde in Ihrem Download-Ordner gespeichert.",
+    noButtonText:"Wenn die Antwort auf diese Frage 'nein' lautet, fahren Sie bitte fort, indem Sie die Schaltfläche 'Weiter' drücken.",
+    pdfProductErr:"Fehler: Kein empfohlenes Produkt für die PDF-Generierung verfügbar.",
+    pdfSuccess:"PDF erfolgreich erstellt!",
+    pdfErrCreating:"Fehler: Beim Generieren des PDF ist ein Fehler aufgetreten."
   },
   ru: {
     welcome: 'Добро пожаловать в JUNG',
@@ -170,6 +185,11 @@ const translations: Translations = {
     contactSupplier:"Связаться с поставщиком",
     backToMain:"Вернуться на главную страницу",
     errOneCategory:"Выберите хотя бы одну категорию.",
+    pdfDownloaded:"PDF загружен, PDF-файл сохранен в вашей папке Загрузки.",
+    noButtonText:"Если ответ на этот вопрос 'нет', пожалуйста, продолжайте, нажав кнопку 'Далее'.",
+    pdfProductErr:"Ошибка: Рекомендуемый продукт недоступен для создания PDF.",
+    pdfSuccess:"PDF успешно создан!",
+    pdfErrCreating:"Ошибка: Произошла ошибка при создании PDF."
   },
 };
 

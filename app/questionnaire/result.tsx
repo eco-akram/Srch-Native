@@ -11,17 +11,22 @@ import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
 import { generatePDF } from '../../utils/pdfRezult';
+import { useToast } from '@/components/ui/toast';
+import { WarningToast } from '@/components/WarningToast';
 
 const ResultScreen = () => {
+  const toast = useToast();
   const translationContext = useContext(TranslationContext);
-  const translate = translationContext ? translationContext.translate : () => '';
+  const translate = translationContext
+    ? translationContext.translate
+    : () => '';
 
   const { recommendedProduct, clearAnswers, lastQuestionId } = useAnswerStore(
     (state) => ({
       recommendedProduct: state.recommendedProduct,
       clearAnswers: state.clearAnswers,
       lastQuestionId: state.lastQuestionId,
-    })
+    }),
   );
 
   const [isNavigating, setIsNavigating] = useState(false);
@@ -41,14 +46,34 @@ const ResultScreen = () => {
     try {
       console.log('Attempting to generate PDF...');
       if (recommendedProduct) {
-        await generatePDF(recommendedProduct.name, recommendedProduct.description);
+        await generatePDF(
+          recommendedProduct.name,
+          recommendedProduct.description,
+        );
         console.log('PDF generated successfully');
+        // Show success toast
+        toast.show({
+          placement: 'top',
+          render: () => (
+            <WarningToast message={translate("pdfSuccess")}/>
+          ),
+        });
       } else {
-        Alert.alert('Error', 'No recommended product available for PDF generation.');
+        toast.show({
+          placement: 'top',
+          render: () => (
+            <WarningToast message={translate("pdfProductErr")} />
+          ),
+        });
       }
     } catch (error) {
       console.error('Error generating PDF:', error);
-      Alert.alert('Error', 'An error occurred while generating the PDF.');
+      toast.show({
+        placement: 'top',
+        render: () => (
+          <WarningToast message={translate("pdfErrCreating")} />
+        ),
+      });
     }
   };
 
@@ -60,7 +85,7 @@ const ResultScreen = () => {
   const handleContactSupplier = () => {
     console.log('Opening supplier contact page...');
     Linking.openURL('https://www.jung.de/lt/kontaktai').catch((err) =>
-      console.error('Failed to open link: ', err)
+      console.error('Failed to open link: ', err),
     );
   };
 
@@ -87,13 +112,21 @@ const ResultScreen = () => {
   };
 
   return (
-    <Box className="align-center flex-1 justify-center p-4" style={{ backgroundColor: '#F8F8F8' }}>
+    <Box
+      className="align-center flex-1 justify-center p-4"
+      style={{ backgroundColor: '#F8F8F8' }}
+    >
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
           <Pressable onPress={handleGoBackToLastQuestion}>
-            <Icon as={ArrowLeft} size="xl" color="black" style={{ width: 35, height: 35 }} />
+            <Icon
+              as={ArrowLeft}
+              size="xl"
+              color="black"
+              style={{ width: 35, height: 35 }}
+            />
           </Pressable>
         </HStack>
       </Box>
