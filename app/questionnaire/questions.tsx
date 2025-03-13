@@ -38,7 +38,7 @@ const QuestionsScreen = () => {
     setLoading(false);
 
     if (filteredQuestions.length > 0) {
-      router.push({
+      router.replace({
         pathname: '/questionnaire/[id]',
         params: { id: filteredQuestions[0].id }, // ✅ Start with first question
       });

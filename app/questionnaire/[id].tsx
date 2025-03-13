@@ -129,7 +129,7 @@ const QuestionScreen = () => {
         params: { id: filteredQuestions[prevIndex].id },
       });
     } else {
-      router.back();
+      router.replace("/questionnaire/categories");
     }
   };
 

@@ -54,7 +54,7 @@ const CategoriesScreen = () => {
       });
       return;
     }
-    router.push('/questionnaire/questions');
+    router.replace('/questionnaire/questions');
   };
 
   if (!categories || categories.length === 0) {
