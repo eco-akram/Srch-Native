@@ -53,8 +53,7 @@ const ResultScreen = () => {
   };
 
   const repeatQuestionnaire = () => {
-    console.log('Navigating to system configuration...');
-    router.push('/questionnaire/categories');
+    router.replace('/questionnaire/categories');
   };
 
   const handleContactSupplier = () => {

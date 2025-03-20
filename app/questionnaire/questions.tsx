@@ -26,26 +26,24 @@ const QuestionsScreen = () => {
     ? data.Categories.filter((category) => selectedCategories.has(category.id))
     : [];
 
-  // ✅ Fetch Questions based on selected categories
-  const fetchQuestions = async () => {
-    setLoading(true);
-
-    // ✅ Fetch filtered questions from useSync() directly
-    const filteredQuestions = data.Questions
-      ? data.Questions.filter((q) => selectedCategories.has(q.categoryId))
-      : [];
-
-    setLoading(false);
-
-    if (filteredQuestions.length > 0) {
-      router.replace({
-        pathname: '/questionnaire/[id]',
-        params: { id: filteredQuestions[0].id }, // ✅ Start with first question
-      });
-    } else {
-      alert('No questions found for the selected categories.');
-    }
-  };
+    const fetchQuestions = async () => {
+      setLoading(true);
+      
+      // Check if questions exist
+      const allQuestions = data.Questions ? [...data.Questions] : [];
+      
+      setLoading(false);
+      
+      if (allQuestions.length > 0) {
+        // Simply navigate to the questionnaire page without explicitly setting a question id.
+        // The useQuestionFlow hook will then detect that no valid id is provided and default to the head of the linked list.
+        router.replace('/questionnaire/[id]');
+      } else {
+        alert('No questions available.');
+      }
+    };
+    
+    
 
   return (
     <Box
@@ -57,7 +55,7 @@ const QuestionsScreen = () => {
       {/* Back Button */}
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
-          <Pressable onPress={() => router.back()}>
+        <Pressable onPress={() => router.replace('/questionnaire/categories')}>
             <Icon
               as={ArrowLeft}
               size="xl"
