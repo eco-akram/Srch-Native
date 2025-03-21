@@ -10,7 +10,7 @@ import LanguageModal from '@/components/LanguageModal';
 import { Text } from '@/components/ui/text';
 import { TranslationContext } from '../contexts/TranslationContext';
 
-import { Settings, Info, CircleArrowRight  } from 'lucide-react-native';
+import { Settings, Info, CircleArrowRight, History } from 'lucide-react-native';
 
 // Import the logo image
 // Ensure this path is correct
@@ -95,6 +95,19 @@ const HomeScreen = () => {
               {translate('info')}
               </Text>
             </Button>
+
+            <Button
+              className="bg-white rounded-xl mt-3"
+              variant="outline"
+              size="xl"
+              onPress={() => router.push('/sysInfoCategories/myHistory')}
+            >
+              <History size={24} color="black" />
+              <Text className="color-black font-semibold text-xl">
+              {translate('myHistory')}
+              </Text>
+            </Button>
+
           </VStack>
         </Box>
       </Box>

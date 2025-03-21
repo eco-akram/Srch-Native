@@ -3,11 +3,13 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { TranslationProvider } from '../../contexts/TranslationContext';
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { Provider as PaperProvider } from 'react-native-paper';
 
 const Layout = () => {
   return (
     <TranslationProvider>
     <GluestackUIProvider mode="light">
+    <PaperProvider>
       <View style={styles.container}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="sysInfo" />
@@ -15,8 +17,10 @@ const Layout = () => {
           <Stack.Screen name="jung" />
           <Stack.Screen name="knx" />
           <Stack.Screen name="lb-Manage" />
+          
         </Stack>
       </View>
+      </PaperProvider>
     </GluestackUIProvider>
     </TranslationProvider>
   );

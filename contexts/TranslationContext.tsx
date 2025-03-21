@@ -50,6 +50,7 @@ const translations: Translations = {
     contactSupplier:"Susisiekti su tiekėju",
     backToMain:"Grįžti atgal į pagrindinį puslapį",
     errOneCategory:"Pasirinkite bent vieną kategoriją.",
+    myHistory:"Mano istorija",
   },
   en: {
     welcome: 'Welcome to JUNG',
@@ -90,6 +91,7 @@ const translations: Translations = {
     contactSupplier:"Contact supplier",
     backToMain:"Back to main page",
     errOneCategory:"Choose at least one category.",
+    myHistory:"My history",
   },
   de: {
     welcome: 'Willkommen bei JUNG',
@@ -130,6 +132,7 @@ const translations: Translations = {
     contactSupplier:"Lieferant kontaktieren",
     backToMain:"Zurück zur Hauptseite",
     errOneCategory:"Wählen Sie mindestens eine Kategorie.",
+    myHistory:"Meine Geschichte",
   },
   ru: {
     welcome: 'Добро пожаловать в JUNG',
@@ -170,6 +173,7 @@ const translations: Translations = {
     contactSupplier:"Связаться с поставщиком",
     backToMain:"Вернуться на главную страницу",
     errOneCategory:"Выберите хотя бы одну категорию.",
+    myHistory:"Моя история",
   },
 };
 
