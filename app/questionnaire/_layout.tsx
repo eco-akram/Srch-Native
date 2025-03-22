@@ -5,7 +5,6 @@ import { StatusBar } from 'expo-status-bar';
 import { TranslationProvider } from '../../contexts/TranslationContext';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import Toast from 'react-native-toast-message';
-
 const Layout = () => {
   return (
     <TranslationProvider>

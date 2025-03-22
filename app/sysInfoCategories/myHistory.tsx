@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useHistoryStore } from '../../store/useHistoryStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { generatePDF } from '../../utils/pdfRezult';
-
+import { translateStandalone as translate } from '@/contexts/TranslationContext';
 const MyHistory: React.FC = () => {
     const navigation = useNavigation();
     const [selectionMode, setSelectionMode] = useState(false);
@@ -116,11 +116,13 @@ const MyHistory: React.FC = () => {
                     )}
                 </Box>
 
-                <Text className="text-3xl font-bold text-center mb-4">Mano Istorija</Text>
+                <Text className="text-3xl font-bold text-center mb-4">
+                    {translate('myHistory')}
+                </Text>
 
                 {historyRecords.length === 0 ? (
                     <Text className="text-lg text-center text-gray-500 mt-10">
-                        Istorija šiuo metu tuščia. Nėra jokių išsaugotų įrašų.
+                        {translate('emptyHistory')}
                     </Text>
                 ) : (
                     <>
@@ -152,7 +154,9 @@ const MyHistory: React.FC = () => {
                                         <Icon name="check" size={16} color="white" />
                                     )}
                                 </View>
-                                <Text className="text-base font-medium text-black">Žymėti visus</Text>
+                                <Text className="text-base font-medium text-black">
+                                    {translate('markAll')}
+                                </Text>
                             </TouchableOpacity>
                         )}
 
@@ -230,7 +234,7 @@ const MyHistory: React.FC = () => {
                                             }}
                                         >
                                             <Text className="text-white text-base font-medium">
-                                                Parsisiųsti PDF
+                                                {translate('historyPDF')}
                                             </Text>
                                         </TouchableOpacity>
                                     </Box>
@@ -249,7 +253,7 @@ const MyHistory: React.FC = () => {
                                 }}
                             >
                                 <Text className="text-white text-center text-base font-semibold">
-                                    Ištrinti pažymėtus įrašus
+                                    {translate('deleteSelectedRecords')}
                                 </Text>
                             </TouchableOpacity>
                         )}

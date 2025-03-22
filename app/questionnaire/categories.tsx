@@ -6,12 +6,12 @@ import { StatusBar, Image, FlatList, Animated } from "react-native";
 import { useCategorySelectionStore, useSyncCategories } from "../../store/useCategorySelectionStore";
 import { TranslationContext } from "../../contexts/TranslationContext";
 import { Box } from "@/components/ui/box";
-import { Button } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
 import { TouchableOpacity } from 'react-native';
+import { showToast } from "~/components/Toast/showToast";
 
 /**
  * 📝 Type Definitions for CategoryItem Props
@@ -115,7 +115,12 @@ function CategoriesScreen() {
 
   const goToQuestionsScreen = () => {
     if (selectedCategories.size === 0) {
-      alert(translate("errOneCategory"));
+      showToast(
+        'error',                     // toast type
+        translate('errOneCategory'), // title (translated)
+        ''                           // optional subtitle (you can pass additional info or leave empty)
+      );
+      
       return;
     }
 

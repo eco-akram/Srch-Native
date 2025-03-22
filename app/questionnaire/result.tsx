@@ -50,6 +50,8 @@ const ResultScreen = () => {
     try {
       console.log('Attempting to generate PDF...');
       if (recommendedProduct) {
+        
+        //Dont delete the description it will fuck up the pdf generation in the history
         await generatePDF(recommendedProduct.name, recommendedProduct.description);
         console.log('PDF generated successfully');
       } else {
@@ -123,7 +125,7 @@ const ResultScreen = () => {
         </HStack>
       </Box>
 
-      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 70 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 50 }}>
         <Box className="align-center justify-center">
           <View
             style={{

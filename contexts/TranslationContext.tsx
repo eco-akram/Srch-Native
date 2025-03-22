@@ -51,6 +51,14 @@ const translations: Translations = {
     backToMain:"Grįžti atgal į pagrindinį puslapį",
     errOneCategory:"Pasirinkite bent vieną kategoriją.",
     myHistory:"Mano istorija",
+    successPDF:"PDF buvo išsaugotas",
+    errorPDF:"PDF generavimas nepavyko",
+    successPDFmesagge:"PDF buvo išsaugotas', 'Failas sėkmingai išsaugotas.",
+    errorPDFmessage:"Nepavyko pasiekti atsisiuntimų aplanko.",
+    emptyHistory:"Istorija šiuo metu tuščia. Nėra jokių išsaugotų įrašų.",
+    historyPDF: "Parsisiųsti PDF",
+    markAll: "Žymėti visus",
+    deleteSelectedRecords: "Ištrinti pažymėtus įrašus"
   },
   en: {
     welcome: 'Welcome to JUNG',
@@ -92,6 +100,14 @@ const translations: Translations = {
     backToMain:"Back to main page",
     errOneCategory:"Choose at least one category.",
     myHistory:"My history",
+    successPDF: "PDF has been saved",
+    errorPDF: "PDF generation failed",
+    successPDFmesagge: "PDF has been saved, 'File saved successfully.",
+    errorPDFmessage: "Failed to access the downloads folder.",
+    emptyHistory:"History is currently empty. There are no saved records.",
+    historyPDF: "Download PDF",
+    markAll: "Mark all",
+    deleteSelectedRecords: "Delete selected records"
   },
   de: {
     welcome: 'Willkommen bei JUNG',
@@ -133,6 +149,14 @@ const translations: Translations = {
     backToMain:"Zurück zur Hauptseite",
     errOneCategory:"Wählen Sie mindestens eine Kategorie.",
     myHistory:"Meine Geschichte",
+    successPDF: "PDF wurde gespeichert",
+    errorPDF: "PDF-Generierung fehlgeschlagen",
+    successPDFmesagge: "PDF wurde gespeichert, 'Datei erfolgreich gespeichert.",
+    errorPDFmessage: "Zugriff auf den Download-Ordner fehlgeschlagen.",
+    emptyHistory:"Der Verlauf ist derzeit leer. Es sind keine gespeicherten Einträge vorhanden.",
+    historyPDF: "PDF herunterladen",
+    markAll: "Alle markieren",
+    deleteSelectedRecords: "Ausgewählte Einträge löschen"
   },
   ru: {
     welcome: 'Добро пожаловать в JUNG',
@@ -174,6 +198,14 @@ const translations: Translations = {
     backToMain:"Вернуться на главную страницу",
     errOneCategory:"Выберите хотя бы одну категорию.",
     myHistory:"Моя история",
+    successPDF: "PDF был сохранен",
+    errorPDF: "Не удалось сгенерировать PDF",
+    successPDFmesagge: "PDF был сохранен, 'Файл успешно сохранен.",
+    errorPDFmessage: "Не удалось получить доступ к папке загрузок.",
+    emptyHistory: "История пуста. Сохранённых записей нет.",
+    historyPDF: "Скачать PDF",
+    markAll: "Выбрать всё",
+    deleteSelectedRecords: "Удалить выбранные записи"
   },
 };
 
@@ -209,4 +241,11 @@ export const useTranslation = () => {
     throw new Error('useTranslation must be used within a TranslationProvider');
   }
   return context;
+  
+};
+
+// Standalone translate function (for utilities outside React components)
+export const translateStandalone = (key: string): string => {
+  const language = useLanguageStore.getState().language;
+  return translations[language][key] || key;
 };

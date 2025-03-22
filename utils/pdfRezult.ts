@@ -4,7 +4,7 @@ import { Platform, Alert } from 'react-native';
 import { useSync } from '../hooks/useSync';
 import { useAnswerStore } from '../store/useAnswerStore';
 import { showToast } from '../components/Toast/showToast';
-
+import { translateStandalone as translate } from '@/contexts/TranslationContext';
 export const generatePDF = async (
   name: string,
   description: string,
@@ -165,7 +165,7 @@ export const generatePDF = async (
           await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
         if (permissions.granted) {
-          const fileName = 'Junc.pdf';
+          const fileName = 'Jung.pdf';
           const base64Data = await FileSystem.readAsStringAsync(uri, {
             encoding: FileSystem.EncodingType.Base64,
           });
@@ -180,11 +180,18 @@ export const generatePDF = async (
             encoding: FileSystem.EncodingType.Base64,
           });
 
-          showToast('success', 'PDF buvo išsaugotas', 'Failas sėkmingai išsaugotas.');
-
+          showToast(
+            'success',
+            translate('successPDF'),
+            translate('successPDFmesagge')
+          );
           return;
         } else {
-          showToast('error', 'PDF generavimas nepavyko', 'Nepavyko pasiekti atsisiuntimų aplanko.');
+          showToast(
+            'error',
+            translate('errorPDF'),
+            translate('errorPDFmesagge')
+          );
           return;
         }
       }
