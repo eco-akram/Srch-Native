@@ -109,150 +109,151 @@ const MyHistory: React.FC = () => {
                         />
                     </TouchableOpacity>
 
-                    {!selectionMode && (
-                        <TouchableOpacity
-                            onPress={() => {
-                                if (!selectionMode) {
-                                    setSelectionMode(true);
-                                } else {
-                                    confirmDelete();
-                                }
-                            }}
-                        >
-                            <Icon
-                                name="delete"
-                                size={35}
-                                color="black"
-                            />
+                    {!selectionMode && historyRecords.length > 0 && (
+                        <TouchableOpacity onPress={() => setSelectionMode(true)}>
+                            <Icon name="delete" size={35} color="black" />
                         </TouchableOpacity>
                     )}
-
                 </Box>
 
                 <Text className="text-3xl font-bold text-center mb-4">Mano Istorija</Text>
 
-                {selectionMode && (
-                    <TouchableOpacity
-                        onPress={toggleSelectAll}
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            alignSelf: 'flex-start',
-                            marginBottom: 20,
-                        }}
-                    >
-                        <View
-                            style={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 12,
-                                borderWidth: 2,
-                                borderColor: '#333',
-                                backgroundColor:
-                                    selectedItems.length === historyRecords.length ? '#333' : 'transparent',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginRight: 8,
-                            }}
-                        >
-                            {selectedItems.length === historyRecords.length && (
-                                <Icon name="check" size={16} color="white" />
-                            )}
-                        </View>
-                        <Text className="text-base font-medium text-black">Žymėti visus</Text>
-                    </TouchableOpacity>
-                )}
-
-                {historyRecords.map((item) => {
-                    const isSelected = selectedItems.includes(item.id);
-                    let formattedDate = 'Nežinoma data';
-
-                    try {
-                        const date = new Date(item.timestamp);
-                        if (!isNaN(date.getTime())) {
-                            formattedDate = date
-                                .toISOString()
-                                .replace('T', ' ')
-                                .slice(0, 16)
-                                .replace(/-/g, '/');
-                        }
-                    } catch (e) {
-                        console.warn(`Invalid date format for record ID ${item.id}`);
-                    }
-
-                    return (
-                        <TouchableOpacity
-                            key={item.id}
-                            onPress={() => toggleItemSelection(item.id)}
-                            activeOpacity={1}
-                        >
-                            <Box
-                                className="flex-row justify-between items-center mb-3"
+                {historyRecords.length === 0 ? (
+                    <Text className="text-lg text-center text-gray-500 mt-10">
+                        Istorija šiuo metu tuščia. Nėra jokių išsaugotų įrašų.
+                    </Text>
+                ) : (
+                    <>
+                        {selectionMode && (
+                            <TouchableOpacity
+                                onPress={toggleSelectAll}
                                 style={{
-                                    borderWidth: 1,
-                                    borderColor: isSelected ? 'black' : 'gray',
-                                    backgroundColor: 'white',
-                                    borderRadius: 20,
-                                    padding: 10,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    alignSelf: 'flex-start',
+                                    marginBottom: 20,
                                 }}
                             >
-                                <Text className="text-lg font-medium text-left">{formattedDate}</Text>
+                                <View
+                                    style={{
+                                        width: 20,
+                                        height: 20,
+                                        borderRadius: 12,
+                                        borderWidth: 2,
+                                        borderColor: '#333',
+                                        backgroundColor:
+                                            selectedItems.length === historyRecords.length ? '#333' : 'transparent',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginRight: 8,
+                                    }}
+                                >
+                                    {selectedItems.length === historyRecords.length && (
+                                        <Icon name="check" size={16} color="white" />
+                                    )}
+                                </View>
+                                <Text className="text-base font-medium text-black">Žymėti visus</Text>
+                            </TouchableOpacity>
+                        )}
 
-                                <Box className="flex-row items-center space-x-3">
-                                    <TouchableOpacity
-                                        onPress={() => handleDownloadPDF(item)}
-                                        activeOpacity={selectionMode ? 1 : 0.8}
-                                        className="px-6 py-3 rounded-full"
-                                        disabled={selectionMode}
+                        {historyRecords.map((item) => {
+                            const isSelected = selectedItems.includes(item.id);
+                            let formattedDate = 'Nežinoma data';
+
+                            try {
+                                const date = new Date(item.timestamp);
+                                if (!isNaN(date.getTime())) {
+                                    const pad = (n: number) => n.toString().padStart(2, '0');
+                                    const yyyy = date.getFullYear();
+                                    const mm = pad(date.getMonth() + 1);
+                                    const dd = pad(date.getDate());
+                                    const hh = pad(date.getHours());
+                                    const min = pad(date.getMinutes());
+                                    formattedDate = `${yyyy}/${mm}/${dd} ${hh}:${min}`;
+                                }
+                            } catch (e) {
+                                console.warn(`Invalid date format for record ID ${item.id}`);
+                            }
+
+                            return (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    onPress={() => toggleItemSelection(item.id)}
+                                    activeOpacity={1}
+                                >
+                                    <Box
+                                        className="flex-row justify-between items-center mb-3"
                                         style={{
-                                            backgroundColor: selectionMode ? '#555555' : '#333333',
+                                            borderWidth: 1,
+                                            borderColor: isSelected ? 'black' : 'gray',
+                                            backgroundColor: 'white',
+                                            borderRadius: 20,
+                                            padding: 10,
                                         }}
                                     >
-                                        <Text className="text-white text-base font-medium">
-                                            Parsisiųsti PDF
-                                        </Text>
-                                    </TouchableOpacity>
-
-                                    {selectionMode && (
-                                        <TouchableOpacity
-                                            onPress={() => toggleItemSelection(item.id)}
+                                        <Box
                                             style={{
-                                                marginLeft: 10,
-                                                width: 24,
-                                                height: 24,
-                                                borderRadius: 12,
-                                                borderWidth: 2,
-                                                borderColor: '#333',
-                                                backgroundColor: isSelected ? '#333' : 'transparent',
-                                                justifyContent: 'center',
+                                                flexDirection: 'row',
                                                 alignItems: 'center',
+                                                gap: 10,
                                             }}
                                         >
-                                            {isSelected && (
-                                                <Icon name="check" size={16} color="white" />
+                                            {selectionMode && (
+                                                <TouchableOpacity
+                                                    onPress={() => toggleItemSelection(item.id)}
+                                                    style={{
+                                                        width: 24,
+                                                        height: 24,
+                                                        borderRadius: 12,
+                                                        borderWidth: 2,
+                                                        borderColor: '#333',
+                                                        backgroundColor: isSelected ? '#333' : 'transparent',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                    }}
+                                                >
+                                                    {isSelected && (
+                                                        <Icon name="check" size={16} color="white" />
+                                                    )}
+                                                </TouchableOpacity>
                                             )}
-                                        </TouchableOpacity>
-                                    )}
-                                </Box>
-                            </Box>
-                        </TouchableOpacity>
-                    );
-                })}
+                                            <Text className="text-lg font-medium text-left">{formattedDate}</Text>
+                                        </Box>
 
-                {selectionMode && selectedItems.length > 0 && (
-                    <TouchableOpacity
-                        onPress={confirmDelete}
-                        style={{
-                            marginTop: 20,
-                            backgroundColor: 'black',
-                            paddingVertical: 12,
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Text className="text-white text-center text-base font-semibold">
-                            Ištrinti pažymėtus įrašus
-                        </Text>
-                    </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={() => handleDownloadPDF(item)}
+                                            activeOpacity={selectionMode ? 1 : 0.8}
+                                            className="px-6 py-3 rounded-full"
+                                            disabled={selectionMode}
+                                            style={{
+                                                backgroundColor: selectionMode ? '#555555' : '#333333',
+                                            }}
+                                        >
+                                            <Text className="text-white text-base font-medium">
+                                                Parsisiųsti PDF
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </Box>
+                                </TouchableOpacity>
+                            );
+                        })}
+
+                        {selectionMode && selectedItems.length > 0 && (
+                            <TouchableOpacity
+                                onPress={confirmDelete}
+                                style={{
+                                    marginTop: 20,
+                                    backgroundColor: 'black',
+                                    paddingVertical: 12,
+                                    borderRadius: 10,
+                                }}
+                            >
+                                <Text className="text-white text-center text-base font-semibold">
+                                    Ištrinti pažymėtus įrašus
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                    </>
                 )}
             </ScrollView>
         </SafeAreaView>
