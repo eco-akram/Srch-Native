@@ -4,6 +4,7 @@ import React, { useContext, useState } from 'react';
 import { StatusBar, Image, View, Linking, Alert } from 'react-native';
 import { TranslationContext } from '../../contexts/TranslationContext';
 import { useAnswerStore } from '../../store/useAnswerStore';
+import { useHistoryStore } from '../../store/useHistoryStore';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
@@ -79,11 +80,27 @@ const ResultScreen = () => {
     }
   };
 
-  const handleGoBackToHome = () => {
-    console.log('Navigating back to the home page...');
-    clearAnswers();
-    router.replace('/');
-  };
+const handleGoBackToHome = async () => {
+  const { addHistoryRecord } = useHistoryStore.getState();
+  const { answers, recommendedProduct, clearAnswers } = useAnswerStore.getState();
+
+  if (!recommendedProduct) {
+    console.error('❌ Nėra rekomenduoto produkto');
+    return;
+  }
+
+  await addHistoryRecord({
+    answers,
+    recommendedProduct: {
+      id: recommendedProduct.productId.toString(), // arba .id jei turi
+      productName: recommendedProduct.name,
+    },
+    timestamp: Date.now(),
+  });
+
+  clearAnswers();
+  router.replace('/');
+};
 
   return (
     <Box className="align-center flex-1 justify-center p-4" style={{ backgroundColor: '#F8F8F8' }}>

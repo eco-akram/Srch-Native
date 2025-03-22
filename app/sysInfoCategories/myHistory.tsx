@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     ScrollView,
     TouchableOpacity,
@@ -10,53 +10,55 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { useNavigation } from '@react-navigation/native';
+import { useHistoryStore } from '../../store/useHistoryStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { generatePDF } from '../../utils/pdfRezult';
 
 const MyHistory: React.FC = () => {
     const navigation = useNavigation();
     const [selectionMode, setSelectionMode] = useState(false);
-    const [selectedItems, setSelectedItems] = useState<number[]>([]);
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-    const historyData = [
-        { date: '2025/03/19 21:41' },
-        { date: '2025/03/19 23:34' },
-        { date: '2025/03/20 08:21' },
-        { date: '2025/03/19 23:34' },
-        { date: '2025/03/19 23:34' },
-        { date: '2025/03/19 21:41' },
-        { date: '2025/03/19 23:34' },
-        { date: '2025/03/19 21:41' },
-    ];
+    const historyRecords = useHistoryStore((state) => state.historyRecords);
+    const loadHistory = useHistoryStore((state) => state.loadHistory);
+    const setHistoryRecords = useHistoryStore.setState;
 
-    const toggleItemSelection = (index: number) => {
+    useEffect(() => {
+        loadHistory();
+    }, []);
+
+    const toggleItemSelection = (id: string) => {
         setSelectedItems((prev) =>
-            prev.includes(index)
-                ? prev.filter((i) => i !== index)
-                : [...prev, index]
+            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
         );
     };
 
     const toggleSelectAll = () => {
-        if (selectedItems.length === historyData.length) {
-            setSelectedItems([]); // Nužymėti visus
+        if (selectedItems.length === historyRecords.length) {
+            setSelectedItems([]);
         } else {
-            setSelectedItems(historyData.map((_, index) => index)); // Pažymėti visus
+            setSelectedItems(historyRecords.map((item) => item.id));
         }
     };
 
     const confirmDelete = () => {
         if (selectedItems.length === 0) return;
+
         Alert.alert(
             'Patvirtinti',
             'Ar tikrai norite ištrinti pasirinktus įrašus?',
             [
-                {
-                    text: 'Ne',
-                    style: 'cancel',
-                },
+                { text: 'Ne', style: 'cancel' },
                 {
                     text: 'Taip',
-                    onPress: () => {
-                        console.log('🗑️ Ištrinti šiuos indeksus:', selectedItems);
+                    onPress: async () => {
+                        const remaining = historyRecords.filter(
+                            (record) => !selectedItems.includes(record.id)
+                        );
+
+                        setHistoryRecords({ historyRecords: remaining });
+                        await AsyncStorage.setItem('historyRecords', JSON.stringify(remaining));
+
                         setSelectedItems([]);
                         setSelectionMode(false);
                     },
@@ -64,6 +66,18 @@ const MyHistory: React.FC = () => {
             ],
             { cancelable: true }
         );
+    };
+
+    const handleDownloadPDF = async (item: typeof historyRecords[number]) => {
+        try {
+            await generatePDF(
+                item.recommendedProduct.productName,
+                '',
+                item.answers
+            );
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
     };
 
     return (
@@ -77,9 +91,7 @@ const MyHistory: React.FC = () => {
                 }}
                 showsVerticalScrollIndicator={false}
             >
-                {/* Header */}
                 <Box className="flex-row justify-between mb-8">
-                    {/* Kairys mygtukas */}
                     <TouchableOpacity
                         onPress={() => {
                             if (selectionMode) {
@@ -97,28 +109,28 @@ const MyHistory: React.FC = () => {
                         />
                     </TouchableOpacity>
 
-                    {/* Dešinys mygtukas */}
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (!selectionMode) {
-                                setSelectionMode(true);
-                            } else {
-                                confirmDelete();
-                            }
-                        }}
-                    >
-                        <Icon
-                            name={selectionMode ? 'check' : 'delete'}
-                            size={35}
-                            color="black"
-                        />
-                    </TouchableOpacity>
+                    {!selectionMode && (
+                        <TouchableOpacity
+                            onPress={() => {
+                                if (!selectionMode) {
+                                    setSelectionMode(true);
+                                } else {
+                                    confirmDelete();
+                                }
+                            }}
+                        >
+                            <Icon
+                                name="delete"
+                                size={35}
+                                color="black"
+                            />
+                        </TouchableOpacity>
+                    )}
+
                 </Box>
 
-                {/* Title */}
                 <Text className="text-3xl font-bold text-center mb-4">Mano Istorija</Text>
 
-                {/* Žymėti visus – checkbox + tekstas */}
                 {selectionMode && (
                     <TouchableOpacity
                         onPress={toggleSelectAll}
@@ -137,13 +149,13 @@ const MyHistory: React.FC = () => {
                                 borderWidth: 2,
                                 borderColor: '#333',
                                 backgroundColor:
-                                    selectedItems.length === historyData.length ? '#333' : 'transparent',
+                                    selectedItems.length === historyRecords.length ? '#333' : 'transparent',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 marginRight: 8,
                             }}
                         >
-                            {selectedItems.length === historyData.length && (
+                            {selectedItems.length === historyRecords.length && (
                                 <Icon name="check" size={16} color="white" />
                             )}
                         </View>
@@ -151,13 +163,27 @@ const MyHistory: React.FC = () => {
                     </TouchableOpacity>
                 )}
 
-                {/* History Records */}
-                {historyData.map((item, index) => {
-                    const isSelected = selectedItems.includes(index);
+                {historyRecords.map((item) => {
+                    const isSelected = selectedItems.includes(item.id);
+                    let formattedDate = 'Nežinoma data';
+
+                    try {
+                        const date = new Date(item.timestamp);
+                        if (!isNaN(date.getTime())) {
+                            formattedDate = date
+                                .toISOString()
+                                .replace('T', ' ')
+                                .slice(0, 16)
+                                .replace(/-/g, '/');
+                        }
+                    } catch (e) {
+                        console.warn(`Invalid date format for record ID ${item.id}`);
+                    }
+
                     return (
                         <TouchableOpacity
-                            key={index}
-                            onPress={() => toggleItemSelection(index)}
+                            key={item.id}
+                            onPress={() => toggleItemSelection(item.id)}
                             activeOpacity={1}
                         >
                             <Box
@@ -170,11 +196,11 @@ const MyHistory: React.FC = () => {
                                     padding: 10,
                                 }}
                             >
-                                <Text className="text-lg font-medium text-left">{item.date}</Text>
+                                <Text className="text-lg font-medium text-left">{formattedDate}</Text>
 
                                 <Box className="flex-row items-center space-x-3">
-                                    {/* PDF Download button */}
                                     <TouchableOpacity
+                                        onPress={() => handleDownloadPDF(item)}
                                         activeOpacity={selectionMode ? 1 : 0.8}
                                         className="px-6 py-3 rounded-full"
                                         disabled={selectionMode}
@@ -187,10 +213,9 @@ const MyHistory: React.FC = () => {
                                         </Text>
                                     </TouchableOpacity>
 
-                                    {/* Round Checkbox */}
                                     {selectionMode && (
                                         <TouchableOpacity
-                                            onPress={() => toggleItemSelection(index)}
+                                            onPress={() => toggleItemSelection(item.id)}
                                             style={{
                                                 marginLeft: 10,
                                                 width: 24,
@@ -214,7 +239,6 @@ const MyHistory: React.FC = () => {
                     );
                 })}
 
-                {/* Patvirtinimo veiksmas */}
                 {selectionMode && selectedItems.length > 0 && (
                     <TouchableOpacity
                         onPress={confirmDelete}

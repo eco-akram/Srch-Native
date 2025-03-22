@@ -4,6 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { TranslationProvider } from '../../contexts/TranslationContext';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import Toast from 'react-native-toast-message';
 
 const Layout = () => {
   return (
@@ -16,6 +17,7 @@ const Layout = () => {
           </Stack>
           <StatusBar style="dark" />
         </View>
+        <Toast />
       </GluestackUIProvider>
     </TranslationProvider>
   );
