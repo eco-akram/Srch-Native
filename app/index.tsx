@@ -1,7 +1,6 @@
 import { router } from 'expo-router';
 import React, { useContext } from 'react';
 import { Image, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
@@ -9,7 +8,7 @@ import { VStack } from '@/components/ui/vstack';
 import LanguageModal from '@/components/LanguageModal';
 import { Text } from '@/components/ui/text';
 import { TranslationContext } from '../contexts/TranslationContext';
-
+import { TouchableOpacity } from 'react-native';
 import { Settings, Info, CircleArrowRight, History } from 'lucide-react-native';
 
 // Import the logo image
@@ -43,36 +42,38 @@ const HomeScreen = () => {
 
         <Box className="align-center justify-center p-4 mb-28">
           <Text className="text-center color-black font-bold text-3xl">
-          {translate('welcome')}
+            {translate('welcome')}
           </Text>
           <Text className="mb-2 text-center color-secondary font-medium text-lg">
-          {translate('tagline')}
+            {translate('tagline')}
           </Text>
         </Box>
 
         {/* Card with Buttons */}
         <Box className="justify-center rounded-xl bg-[#EAEAEA] p-6">
-          {/*           <View
-            style={{
-              height: 1,
-              backgroundColor: '#AAA9A9',
-              width: '100%',
-              marginBottom: 16,
-            }}
-          /> */}
 
           <VStack className="justify-center" space="md">
-            <Button
-              className="bg-[#18181B] rounded-xl mt-3"
-              variant="outline"
-              size="xl"
+
+            <TouchableOpacity
               onPress={() => router.push('/questionnaire/categories')}
+              activeOpacity={0.85}
+              style={{
+                backgroundColor: '#18181B',
+                borderRadius: 12,
+                paddingVertical: 9,
+                paddingHorizontal: 16,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 12,
+              }}
             >
-              <CircleArrowRight  size={24} color="white" />
-              <Text className="color-white font-semibold text-xl">
-              {translate('discoverSolution')}
+              <CircleArrowRight size={24} color="white" />
+              <Text className="color-white font-semibold text-xl ml-2">
+                {translate('discoverSolution')}
               </Text>
-            </Button>
+            </TouchableOpacity>
+
             <Button
               className="bg-white rounded-xl mt-3"
               variant="outline"
@@ -81,7 +82,7 @@ const HomeScreen = () => {
             >
               <Settings size={24} color="black" />
               <Text className="color-black font-semibold text-xl">
-              {translate('systemInfo')}
+                {translate('systemInfo')}
               </Text>
             </Button>
             <Button
@@ -92,7 +93,7 @@ const HomeScreen = () => {
             >
               <Info size={24} color="black" />
               <Text className="color-black font-semibold text-xl">
-              {translate('info')}
+                {translate('info')}
               </Text>
             </Button>
 
@@ -104,7 +105,7 @@ const HomeScreen = () => {
             >
               <History size={24} color="black" />
               <Text className="color-black font-semibold text-xl">
-              {translate('myHistory')}
+                {translate('myHistory')}
               </Text>
             </Button>
 

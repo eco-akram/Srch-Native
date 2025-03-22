@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { HStack } from "~/components/ui/hstack";
+import { TouchableOpacity } from 'react-native';
 
 const QuestionScreen = () => {
   const { id } = useLocalSearchParams();
@@ -84,7 +85,7 @@ const QuestionScreen = () => {
 
       {/* Answer List */}
       <FlatList
-        data={currentAnswers} 
+        data={currentAnswers}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <Pressable
@@ -105,11 +106,21 @@ const QuestionScreen = () => {
       />
 
       {/* Next Button */}
-      <Button className="bg-[#18181B] rounded-xl mt-3" variant="outline" size="xl" onPress={goToNextQuestion}>
+      <TouchableOpacity
+        onPress={goToNextQuestion}
+        activeOpacity={0.85}
+        style={{
+          backgroundColor: '#18181B',
+          borderRadius: 12,
+          paddingVertical: 12,
+          alignItems: 'center',
+          marginTop: 12, // equivalent to mt-3
+        }}
+      >
         <Text className="color-white font-semibold text-xl">
-          {translate("next")}
+          {translate('next')}
         </Text>
-      </Button>
+      </TouchableOpacity>
     </Box>
   );
 };

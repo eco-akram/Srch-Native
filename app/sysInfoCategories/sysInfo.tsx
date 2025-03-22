@@ -1,8 +1,8 @@
 import { router } from "expo-router";
 import { ArrowLeft, Settings, Home, Grid, Cpu } from "lucide-react-native";
 import React, { useContext } from "react";
-import { StatusBar, Image } from "react-native";
-
+import { Image } from "react-native";
+import { TouchableOpacity } from 'react-native';
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
@@ -15,14 +15,14 @@ import { TranslationContext } from '../../contexts/TranslationContext';
 
 const SysInfoScreen = () => {
   const translationContext = useContext(TranslationContext);
-         const translate = translationContext ? translationContext.translate : () => '';
+  const translate = translationContext ? translationContext.translate : () => '';
   return (
     <Box
       className="align-center flex-1 justify-center p-4"
       style={{ backgroundColor: "#F8F8F8" }} // Light grey background for a softer look
     >
-      
-      
+
+
       {/* Header with Back Button */}
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
@@ -60,13 +60,21 @@ const SysInfoScreen = () => {
         </Box>
 
         {/* Card with Buttons */}
-        <Box className="justify-center rounded-xl bg-white p-6 shadow-md">
+        <Box className="justify-center rounded-xl bg-[#EAEAEA] p-6 shadow-md">
           <VStack className="justify-center" space="md">
-            <Button
-              className="bg-[#18181B] rounded-xl mt-3"
-              variant="outline"
-              size="xl"
+
+            <TouchableOpacity
               onPress={() => router.push("/sysInfoCategories/lb-Manage")}
+              activeOpacity={0.85}
+              style={{
+                backgroundColor: '#18181B',
+                borderRadius: 12,
+                paddingVertical: 9,
+                paddingHorizontal: 16,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 12,
+              }}
             >
               <HStack space="sm">
                 <Cpu size={24} color="white" />
@@ -74,9 +82,10 @@ const SysInfoScreen = () => {
                   LB-Management
                 </Text>
               </HStack>
-            </Button>
+            </TouchableOpacity>
+
             <Button
-              className="bg-white rounded-xl mt-3 border border-[#EAEAEA]"
+              className="bg-white rounded-xl mt-3 border"
               variant="outline"
               size="xl"
               onPress={() => router.push("/sysInfoCategories/eNET")}
@@ -84,12 +93,13 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Home size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                eNet SMART HOME
+                  eNet SMART HOME
                 </Text>
               </HStack>
             </Button>
+
             <Button
-              className="bg-white rounded-xl mt-3 border border-[#EAEAEA]"
+              className="bg-white rounded-xl mt-3 border"
               variant="outline"
               size="xl"
               onPress={() => router.push("/sysInfoCategories/jung")}
@@ -97,12 +107,13 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Grid size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                JUNG HOME
+                  JUNG HOME
                 </Text>
               </HStack>
             </Button>
+
             <Button
-              className="bg-white rounded-xl mt-3 border border-[#EAEAEA]"
+              className="bg-white rounded-xl mt-3 border"
               variant="outline"
               size="xl"
               onPress={() => router.push("/sysInfoCategories/knx")}
@@ -110,10 +121,11 @@ const SysInfoScreen = () => {
               <HStack space="sm">
                 <Settings size={24} color="black" />
                 <Text className="color-black font-semibold text-xl">
-                KNX valdymo sistema
+                  KNX valdymo sistema
                 </Text>
               </HStack>
             </Button>
+
           </VStack>
         </Box>
       </Box>

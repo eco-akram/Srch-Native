@@ -13,37 +13,37 @@ import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
-
+import { TouchableOpacity } from 'react-native';
 const QuestionsScreen = () => {
   const { selectedCategories } = useCategorySelectionStore(); // ✅ Read selected categories from Zustand
   const { data } = useSync(); // ✅ Fetch categories from global Zustand store
   const [loading, setLoading] = useState(false);
   const translationContext = useContext(TranslationContext);
-           const translate = translationContext ? translationContext.translate : () => '';
-  
-  // ✅ Get the selected categories from `useSync`
-  const selectedCategoryList = data.Categories
-    ? data.Categories.filter((category) => selectedCategories.has(category.id))
-    : [];
+  const translate = translationContext ? translationContext.translate : () => '';
 
-    const fetchQuestions = async () => {
-      setLoading(true);
-      
-      // Check if questions exist
-      const allQuestions = data.Questions ? [...data.Questions] : [];
-      
-      setLoading(false);
-      
-      if (allQuestions.length > 0) {
-        // Simply navigate to the questionnaire page without explicitly setting a question id.
-        // The useQuestionFlow hook will then detect that no valid id is provided and default to the head of the linked list.
-        router.replace('/questionnaire/[id]');
-      } else {
-        alert('No questions available.');
-      }
-    };
-    
-    
+  // ✅ Get the selected categories from `useSync`
+  const selectedCategoryList = Array.from(selectedCategories)
+    .map((id) => data.Categories?.find((category) => category.id === id))
+    .filter((category) => category !== undefined);
+
+  const fetchQuestions = async () => {
+    setLoading(true);
+
+    // Check if questions exist
+    const allQuestions = data.Questions ? [...data.Questions] : [];
+
+    setLoading(false);
+
+    if (allQuestions.length > 0) {
+      // Simply navigate to the questionnaire page without explicitly setting a question id.
+      // The useQuestionFlow hook will then detect that no valid id is provided and default to the head of the linked list.
+      router.replace('/questionnaire/[id]');
+    } else {
+      alert('No questions available.');
+    }
+  };
+
+
 
   return (
     <Box
@@ -55,7 +55,7 @@ const QuestionsScreen = () => {
       {/* Back Button */}
       <Box className="absolute left-2 right-0 top-2 p-4">
         <HStack space="lg">
-        <Pressable onPress={() => router.replace('/questionnaire/categories')}>
+          <Pressable onPress={() => router.replace('/questionnaire/categories')}>
             <Icon
               as={ArrowLeft}
               size="xl"
@@ -121,35 +121,27 @@ const QuestionsScreen = () => {
           </Box>
         )}
       />
-
-      {/* Next Button */}
-      {/*       <Button
-        className="mt-4"
-        style={{ borderRadius: 24 }}
+      <TouchableOpacity
         onPress={fetchQuestions}
         disabled={loading}
+        activeOpacity={0.85}
+        style={{
+          backgroundColor: loading ? '#2a2a2a' : '#18181B',
+          borderRadius: 12,
+          paddingVertical: 12,
+          alignItems: 'center',
+          marginTop: 12,
+          opacity: loading ? 0.7 : 1, // dim button when loading
+        }}
       >
         {loading ? (
           <ActivityIndicator color="white" />
         ) : (
-          <Text size="md" style={{ color: 'white', fontWeight: 'bold' }}>
-            Toliau
+          <Text className="color-white font-semibold text-xl">
+            {translate('next')}
           </Text>
         )}
-      </Button> */}
-      <Button
-        className="bg-[#18181B] rounded-xl mt-3"
-        variant="outline"
-        size="xl"
-        onPress={fetchQuestions}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Text className="color-white font-semibold text-xl">{translate("next")}</Text>
-        )}
-      </Button>
+      </TouchableOpacity>
     </Box>
   );
 };

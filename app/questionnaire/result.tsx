@@ -1,7 +1,15 @@
 import { router } from 'expo-router';
 import { ArrowLeft, Download, List, Mail } from 'lucide-react-native';
 import React, { useContext, useState } from 'react';
-import { StatusBar, Image, View, Linking, Alert } from 'react-native';
+import {
+  StatusBar,
+  Image,
+  View,
+  Linking,
+  Alert,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import { TranslationContext } from '../../contexts/TranslationContext';
 import { useAnswerStore } from '../../store/useAnswerStore';
 import { useHistoryStore } from '../../store/useHistoryStore';
@@ -80,33 +88,34 @@ const ResultScreen = () => {
     }
   };
 
-const handleGoBackToHome = async () => {
-  const { addHistoryRecord } = useHistoryStore.getState();
-  const { answers, recommendedProduct, clearAnswers } = useAnswerStore.getState();
+  const handleGoBackToHome = async () => {
+    const { addHistoryRecord } = useHistoryStore.getState();
+    const { answers, recommendedProduct, clearAnswers } = useAnswerStore.getState();
 
-  if (!recommendedProduct) {
-    console.error('❌ Nėra rekomenduoto produkto');
-    return;
-  }
+    if (!recommendedProduct) {
+      console.error('❌ Nėra rekomenduoto produkto');
+      return;
+    }
 
-  await addHistoryRecord({
-    answers,
-    recommendedProduct: {
-      id: recommendedProduct.productId.toString(), // arba .id jei turi
-      productName: recommendedProduct.name,
-    },
-    timestamp: Date.now(),
-  });
+    await addHistoryRecord({
+      answers,
+      recommendedProduct: {
+        id: recommendedProduct.productId.toString(),
+        productName: recommendedProduct.name,
+      },
+      timestamp: Date.now(),
+    });
 
-  clearAnswers();
-  router.replace('/');
-};
+    clearAnswers();
+    router.replace('/');
+  };
 
   return (
-    <Box className="align-center flex-1 justify-center p-4" style={{ backgroundColor: '#F8F8F8' }}>
+    <Box className="flex-1 justify-center" style={{ backgroundColor: '#F8F8F8' }}>
       <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
-      <Box className="absolute left-2 right-0 top-2 p-4">
+      {/* Grįžimo mygtukas viršuje */}
+      <Box className="absolute left-2 right-0 top-2 p-4 z-10">
         <HStack space="lg">
           <Pressable onPress={handleGoBackToLastQuestion}>
             <Icon as={ArrowLeft} size="xl" color="black" style={{ width: 35, height: 35 }} />
@@ -114,83 +123,107 @@ const handleGoBackToHome = async () => {
         </HStack>
       </Box>
 
-      <Box className="align-center justify-center p-4">
-        <View
-          style={{
-            width: '100%',
-            marginBottom: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Image
-            source={require('../../assets/jung-enet-smart-home.jpg')}
+      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 70 }}>
+        <Box className="align-center justify-center">
+          <View
             style={{
               width: '100%',
-              height: 200,
-              resizeMode: 'contain',
+              marginBottom: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-          />
-        </View>
+          >
+            <Image
+              source={require('../../assets/jung-enet-smart-home.jpg')}
+              style={{
+                width: '100%',
+                height: 200,
+                resizeMode: 'contain',
+              }}
+            />
+          </View>
 
-        <Text className="text-center color-black font-bold text-3xl mb-4">
-          {recommendedProduct.name}
-        </Text>
-        <Text className="text-center color-[#666666] font-medium text-lg mb-10">
-          {recommendedProduct.description}
-        </Text>
-
-        <Button
-          className="bg-[#18181B] rounded-xl mb-4"
-          variant="outline"
-          size="xl"
-          onPress={handleDownloadPDF}
-        >
-          <Download size={24} color="white" />
-          <Text className="color-white font-semibold text-xl ml-2">
-            {translate('pdf')}
+          <Text className="text-center color-black font-bold text-3xl mb-4">
+            {recommendedProduct.name}
           </Text>
-        </Button>
-
-        <Button
-          className="bg-white rounded-xl mb-4 border border-[#EAEAEA]"
-          variant="outline"
-          size="xl"
-          onPress={repeatQuestionnaire}
-        >
-          <List size={24} color="black" />
-          <Text className="color-black font-semibold text-xl ml-2">
-            {translate('config')}
+          <Text className="text-center color-[#666666] font-medium text-lg mb-10">
+            {recommendedProduct.description}
           </Text>
-        </Button>
 
-        <Text className="text-center color-[#666666] font-medium text-lg mb-4">
-          {translate('contactInfo')}
-        </Text>
+          {/* TouchableOpacity - Download PDF */}
+          <TouchableOpacity
+            onPress={handleDownloadPDF}
+            style={{
+              backgroundColor: '#18181B',
+              borderRadius: 12,
+              paddingVertical: 12,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 16,
+            }}
+            activeOpacity={0.85}
+          >
+            <Download size={24} color="white" />
+            <Text className="color-white font-semibold text-xl ml-2">
+              {translate('pdf')}
+            </Text>
+          </TouchableOpacity>
 
-        <Button
-          className="bg-[#18181B] rounded-xl mb-4"
-          variant="outline"
-          size="xl"
-          onPress={handleContactSupplier}
-        >
-          <Mail size={24} color="white" />
-          <Text className="color-white font-semibold text-xl ml-2">
-            {translate('contactSupplier')}
+          {/* White button stays the same */}
+          <Button
+            className="bg-white rounded-xl mb-4 border"
+            variant="outline"
+            size="xl"
+            onPress={repeatQuestionnaire}
+          >
+            <List size={24} color="black" />
+            <Text className="color-black font-semibold text-xl ml-2">
+              {translate('config')}
+            </Text>
+          </Button>
+
+          <Text className="text-center color-[#666666] font-medium text-lg mb-4">
+            {translate('contactInfo')}
           </Text>
-        </Button>
 
-        <Button
-          className="bg-[#18181B] rounded-xl"
-          variant="outline"
-          size="xl"
-          onPress={handleGoBackToHome}
-        >
-          <Text className="color-white font-semibold text-xl">
-            {translate('backToMain')}
-          </Text>
-        </Button>
-      </Box>
+          {/* TouchableOpacity - Contact Supplier */}
+          <TouchableOpacity
+            onPress={handleContactSupplier}
+            style={{
+              backgroundColor: '#18181B',
+              borderRadius: 12,
+              paddingVertical: 12,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 16,
+            }}
+            activeOpacity={0.85}
+          >
+            <Mail size={24} color="white" />
+            <Text className="color-white font-semibold text-xl ml-2">
+              {translate('contactSupplier')}
+            </Text>
+          </TouchableOpacity>
+
+          {/* TouchableOpacity - Go Back to Home */}
+          <TouchableOpacity
+            onPress={handleGoBackToHome}
+            style={{
+              backgroundColor: '#18181B',
+              borderRadius: 12,
+              paddingVertical: 12,
+              alignItems: 'center',
+            }}
+            activeOpacity={0.85}
+          >
+            <Text className="color-white font-semibold text-xl">
+              {translate('backToMain')}
+            </Text>
+          </TouchableOpacity>
+        </Box>
+      </ScrollView>
     </Box>
   );
 };

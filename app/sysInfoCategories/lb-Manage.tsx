@@ -5,17 +5,16 @@ import { StatusBar, Image, View, Linking, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // For fade effect
 
 import { Box } from '@/components/ui/box';
-import { Button } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
 import { Text } from '@/components/ui/text';
-import { VStack } from '@/components/ui/vstack';
+import { TouchableOpacity } from 'react-native';
 import { TranslationContext } from '../../contexts/TranslationContext';
 
 const lbManageScreen = () => {
   const translationContext = useContext(TranslationContext);
-         const translate = translationContext ? translationContext.translate : () => '';
+  const translate = translationContext ? translationContext.translate : () => '';
   // Function to handle the button press and open the URL
   const handleMoreInfoPress = () => {
     const url =
@@ -66,7 +65,7 @@ const lbManageScreen = () => {
             LB-Management
           </Text>
           <Text className="text-center color-[#666666] font-medium text-lg">
-           {translate("sysInfoSub")}
+            {translate("sysInfoSub")}
           </Text>
         </Box>
 
@@ -117,16 +116,21 @@ const lbManageScreen = () => {
           </Text>
 
           {/* "Daugiau informacijos" Button */}
-          <Button
-            className="bg-[#18181B] rounded-xl mt-6"
-            variant="outline"
-            size="xl"
+          <TouchableOpacity
             onPress={handleMoreInfoPress}
+            activeOpacity={0.85}
+            style={{
+              backgroundColor: '#18181B',
+              borderRadius: 12,
+              paddingVertical: 9,
+              alignItems: 'center',
+              marginTop: 24, // equivalent to mt-6
+            }}
           >
             <Text className="color-white font-semibold text-xl">
               {translate("moreInfo")}
             </Text>
-          </Button>
+          </TouchableOpacity>
         </Box>
       </Box>
     </Box>

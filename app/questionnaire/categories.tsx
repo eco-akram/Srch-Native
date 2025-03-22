@@ -11,6 +11,7 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
+import { TouchableOpacity } from 'react-native';
 
 /**
  * 📝 Type Definitions for CategoryItem Props
@@ -119,7 +120,7 @@ function CategoriesScreen() {
     }
 
     console.log("🚀 Navigating to QuestionsScreen with selected categories.");
-    
+
     // ✅ Navigate to `QuestionsScreen.tsx` (NOT directly to a question)
     router.replace({
       pathname: "/questionnaire/questions",
@@ -167,10 +168,22 @@ function CategoriesScreen() {
       />
 
       {/* Next Button */}
-      <Button className="bg-[#18181B] rounded-xl mt-3" variant="outline" size="xl" onPress={goToQuestionsScreen}>
-        <Text className="color-white font-semibold text-xl">{translate("next")}</Text>
-      </Button>
-    </Box> 
+      <TouchableOpacity
+        onPress={goToQuestionsScreen}
+        activeOpacity={0.85}
+        style={{
+          backgroundColor: '#18181B',
+          borderRadius: 12,
+          paddingVertical: 12,
+          alignItems: 'center',
+          marginTop: 12, // same as Tailwind's mt-3
+        }}
+      >
+        <Text className="color-white font-semibold text-xl">
+          {translate('next')}
+        </Text>
+      </TouchableOpacity>
+    </Box>
   );
 }
 

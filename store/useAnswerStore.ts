@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { useSync } from "@/hooks/useSync";
+import { useCategorySelectionStore } from '@/store/useCategorySelectionStore';
 
 // Define the structure of the recommended product
 type RecommendedProduct = {
@@ -8,7 +9,6 @@ type RecommendedProduct = {
   description: string;
 };
 
-// Define the store's state and actions
 type AnswerStore = {
   answers: Record<string, string[]>;
   recommendedProduct: RecommendedProduct | null;
@@ -20,7 +20,6 @@ type AnswerStore = {
   calculateRecommendation: () => Promise<void>;
 };
 
-// Utility function for binary search with attempt counter
 const binarySearch = (
   sortedArray: string[],
   target: string,
@@ -48,34 +47,44 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
   recommendedProduct: null,
   lastQuestionId: null,
 
-  // Store selected answers for a given question
   setAnswer: (questionId, selectedAnswers) =>
     set((state) => ({
       answers: { ...state.answers, [questionId]: selectedAnswers },
     })),
 
-  // Retrieve selected answers for a specific question
   getAnswer: (questionId: string) => {
     return get().answers[questionId] || [];
   },
 
-  // Clear all answers and the recommended product
   clearAnswers: () => {
     console.log("🧹 Clearing all selected answers and recommended product");
     set({ answers: {}, recommendedProduct: null, lastQuestionId: null });
   },
 
-  // Store the last question ID to facilitate back navigation
   setLastQuestionId: (id) => set({ lastQuestionId: id }),
 
-  // Calculate the recommended product based on user's answers
   calculateRecommendation: async () => {
     console.log("🔄 Starting recommendation calculation...");
 
-    const userAnswers = Object.values(get().answers).flat().map(String);
     const { data } = useSync.getState();
+    const selectedCategories = useCategorySelectionStore.getState().selectedCategories;
+    const questions = Array.isArray(data["Questions"]) ? data["Questions"] : [];
 
-    // Extract products from the data
+    const validQuestionIds = questions
+      .filter((q) => selectedCategories.has(q.categoryId))
+      .map((q) => q.id.toString());
+
+    console.log("✅ Selected Category IDs:", Array.from(selectedCategories));
+    console.log("✅ Valid Question IDs:", validQuestionIds);
+
+    const allAnswers = get().answers;
+
+    const userAnswers = Object.entries(allAnswers)
+      .filter(([questionId]) => validQuestionIds.includes(questionId))
+      .flatMap(([, selectedAnswers]) => selectedAnswers.map(String));
+
+    console.log("✅ Filtered User Answers:", userAnswers);
+
     const products: RecommendedProduct[] = Array.isArray(data["Products"])
       ? data["Products"].map((product: any): RecommendedProduct => ({
           productId: product.id ?? 0,
@@ -97,7 +106,6 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
       return;
     }
 
-    // Retrieve the product-answer mapping
     const rawProductAnswers: any[] = Array.isArray(data["Product_Answers"])
       ? data["Product_Answers"]
       : [];
@@ -113,7 +121,6 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
     const productAnswers: Record<string, string[]> = rawProductAnswers.reduce(
       (acc, entry) => {
         const { productId, answerId } = entry;
-
         if (productId && answerId) {
           const productName = productIdToNameMap[productId];
           if (productName) {
@@ -127,52 +134,44 @@ export const useAnswerStore = create<AnswerStore>((set, get) => ({
     );
 
     let bestMatch: RecommendedProduct | null = null;
-    let highestScore = 0;
     let minRelatedAnswers = Infinity;
+    let bestScore = 0;
 
-    const scores: Record<string, number> = {};
+    const eligibleProducts = products.filter((product) => {
+      const pAnswers = productAnswers[product.name] || [];
+      const hasAll = userAnswers.every((ans) => pAnswers.includes(ans));
+      return hasAll;
+    });
 
-    // Calculate the best matching product based on scores
-    if (userAnswers.length > 0) {
-      products.forEach((product: RecommendedProduct) => {
-        if (!product.name) return;
+    console.log("✅ Eligible Products (fully matching user needs):");
+    eligibleProducts.forEach((product) => {
+      const pAnswers = productAnswers[product.name] || [];
+      console.log(`  - ${product.name} (answers: ${pAnswers.length})`);
+    });
 
-        const matchingAnswers = (productAnswers[product.name] || []).sort();
-        const attemptCounter = { count: 0 };
+    const productScores: Record<string, number> = {};
 
-        const matchedAnswers = userAnswers.filter((answer) =>
-          binarySearch(matchingAnswers, answer, attemptCounter)
-        );
+    eligibleProducts.forEach((product) => {
+      const pAnswers = productAnswers[product.name] || [];
+      const sortedAnswers = [...pAnswers].sort();
+      const attemptCounter = { count: 0 };
+      const matched = userAnswers.filter(ans => binarySearch(sortedAnswers, ans, attemptCounter));
+      const score = matched.length;
 
-        const score = matchedAnswers.length;
-        scores[product.name] = score;
+      productScores[product.name] = score;
 
-        if (
-          score > highestScore ||
-          (score === highestScore &&
-            (productAnswers[product.name]?.length || 0) < minRelatedAnswers)
-        ) {
-          highestScore = score;
-          minRelatedAnswers = productAnswers[product.name]?.length || 0;
-          bestMatch = product;
-        }
-      });
-    } else {
-      // Select the product with the fewest associated answers as a fallback
-      products.forEach((product: RecommendedProduct) => {
-        if (!product.name) return;
+      if (
+        score > bestScore ||
+        (score === bestScore && pAnswers.length < minRelatedAnswers)
+      ) {
+        bestScore = score;
+        minRelatedAnswers = pAnswers.length;
+        bestMatch = product;
+      }
+    });
 
-        const relatedAnswersCount = productAnswers[product.name]?.length || 0;
-
-        if (relatedAnswersCount < minRelatedAnswers) {
-          minRelatedAnswers = relatedAnswersCount;
-          bestMatch = product;
-        }
-      });
-    }
-
+    console.log("📊 Product Scores:", productScores);
     set({ recommendedProduct: bestMatch });
     console.log("🏆 Recommended Product:", bestMatch);
-    console.log("📊 Scores for all products:", scores);
   },
 }));
