@@ -58,7 +58,8 @@ const translations: Translations = {
     emptyHistory:"Istorija šiuo metu tuščia. Nėra jokių išsaugotų įrašų.",
     historyPDF: "Parsisiųsti PDF",
     markAll: "Žymėti visus",
-    deleteSelectedRecords: "Ištrinti pažymėtus įrašus"
+    deleteSelectedRecords: "Ištrinti pažymėtus įrašus",
+    nextInfo:"Jei ši funkcija jums nereikalinga arba atsakymas į klausimą yra „ne“, nieko nepažymėję spustelėkite „Toliau“."
   },
   en: {
     welcome: 'Welcome to JUNG',
@@ -107,7 +108,8 @@ const translations: Translations = {
     emptyHistory:"History is currently empty. There are no saved records.",
     historyPDF: "Download PDF",
     markAll: "Mark all",
-    deleteSelectedRecords: "Delete selected records"
+    deleteSelectedRecords: "Delete selected records",
+    nextInfo:"If you do not need this function or the answer to the question is 'no', click 'Next' without marking anything."
   },
   de: {
     welcome: 'Willkommen bei JUNG',
@@ -156,7 +158,8 @@ const translations: Translations = {
     emptyHistory:"Der Verlauf ist derzeit leer. Es sind keine gespeicherten Einträge vorhanden.",
     historyPDF: "PDF herunterladen",
     markAll: "Alle markieren",
-    deleteSelectedRecords: "Ausgewählte Einträge löschen"
+    deleteSelectedRecords: "Ausgewählte Einträge löschen",
+    nextInfo:"Wenn Sie diese Funktion nicht benötigen oder die Antwort auf die Frage „nein“ lautet, klicken Sie ohne Markierung auf „Weiter“."
   },
   ru: {
     welcome: 'Добро пожаловать в JUNG',
@@ -205,7 +208,8 @@ const translations: Translations = {
     emptyHistory: "История пуста. Сохранённых записей нет.",
     historyPDF: "Скачать PDF",
     markAll: "Выбрать всё",
-    deleteSelectedRecords: "Удалить выбранные записи"
+    deleteSelectedRecords: "Удалить выбранные записи",
+    nextInfo:"Если вам не нужна эта функция или ответ на вопрос «нет», ничего не отмечая, нажмите «Далее»."
   },
 };
 

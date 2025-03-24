@@ -69,7 +69,7 @@ const ResultScreen = () => {
 
   const handleContactSupplier = () => {
     console.log('Opening supplier contact page...');
-    Linking.openURL('https://www.jung.de/lt/kontaktai').catch((err) =>
+    Linking.openURL('https://www.jung.de/lt/1554/kontaktai/kontaktai/').catch((err) =>
       console.error('Failed to open link: ', err)
     );
   };
