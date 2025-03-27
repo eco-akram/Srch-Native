@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { useEffect } from "react";
 import { useSync } from "@/hooks/useSync";
+import { isEqual } from "lodash";
 
 interface Category {
   id: number;
@@ -22,10 +23,9 @@ export const useCategorySelectionStore = create<CategorySelectionStore>((set) =>
   categories: [],
 
   setCategories: (categories) => {
-    // Sort categories by categoryName alphabetically
-    const sortedCategories = [...categories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
-
-    set({ categories: sortedCategories, selectedCategories: new Set() });
+    // ⬇Sort by ID 
+    const orderedById = [...categories].sort((a, b) => a.id - b.id);
+    set({ categories: orderedById, selectedCategories: new Set() });
   },
 
   toggleCategory: (id) =>
@@ -48,13 +48,13 @@ export function useSyncCategories() {
   const { categories, setCategories } = useCategorySelectionStore();
 
   useEffect(() => {
-    // Check if categories have changed before calling setCategories
     if (data.Categories && data.Categories.length > 0) {
-      const sortedCategories = [...data.Categories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
-      // Compare with current categories to avoid redundant updates
-      if (JSON.stringify(categories) !== JSON.stringify(sortedCategories)) {
-        setCategories(sortedCategories); // Set categories and sort them alphabetically
+      const sortedIncoming = [...data.Categories].sort((a, b) => a.id - b.id);
+      const sortedExisting = [...categories].sort((a, b) => a.id - b.id);
+
+      if (!isEqual(sortedExisting, sortedIncoming)) {
+        setCategories(data.Categories); // let store sort it
       }
     }
-  }, [data.Categories, categories, setCategories]); // Include `categories` in the dependency array for comparison
+  }, [data.Categories, categories, setCategories]);
 }

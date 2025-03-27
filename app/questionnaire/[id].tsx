@@ -129,7 +129,7 @@ const QuestionScreen = () => {
         )}
       />
       <Box className="mt-4">
-        <Text className="text-center text-gray-800 text-lg font-[900]">
+        <Text className="text-center text-gray-600 text-lg font-[900]">
           {translate('nextInfo')}
         </Text>
       </Box>
