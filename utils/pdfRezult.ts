@@ -5,6 +5,7 @@ import { useSync } from '../hooks/useSync';
 import { useAnswerStore } from '../store/useAnswerStore';
 import { showToast } from '../components/Toast/showToast';
 import { translateStandalone as translate } from '@/contexts/TranslationContext';
+import { useCategorySelectionStore } from '~/store/useCategorySelectionStore';
 export const generatePDF = async (
   name: string,
   description: string,
@@ -18,7 +19,23 @@ export const generatePDF = async (
     const answersFromDb = data['Answers'] || [];
     const questions = data['Questions'] || [];
 
-    const userSelections = userAnswers || useAnswerStore.getState().answers || {};
+//  Filter answers based on currently selected categories
+const selectedCategoryIds = useCategorySelectionStore.getState().selectedCategories;
+const allAnswers = userAnswers || useAnswerStore.getState().answers || {};
+const validQuestions = Array.isArray(data['Questions']) ? data['Questions'] : [];
+const filteredAnswers: Record<string, string[]> = {};
+
+validQuestions.forEach((question) => {
+  if (selectedCategoryIds.has(question.categoryId)) {
+    const qId = question.id?.toString();
+    if (qId && allAnswers[qId]) {
+      filteredAnswers[qId] = allAnswers[qId];
+    }
+  }
+});
+
+const userSelections = filteredAnswers;
+
 
     const recommendedProduct = products.find(
       (product) => product?.productName === name
@@ -165,16 +182,29 @@ export const generatePDF = async (
           await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
         if (permissions.granted) {
-          const fileName = 'Jung.pdf';
+          // Create a filename with timestamp to avoid overwriting existing files and better clarity
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+          const fileName = `Jung_${timestamp}.pdf`;
           const base64Data = await FileSystem.readAsStringAsync(uri, {
             encoding: FileSystem.EncodingType.Base64,
           });
-
-          fileUri = await FileSystem.StorageAccessFramework.createFileAsync(
-            permissions.directoryUri,
-            fileName,
-            'application/pdf'
-          );
+          
+          try {
+            fileUri = await FileSystem.StorageAccessFramework.createFileAsync(
+              permissions.directoryUri,
+              fileName,
+              'application/pdf'
+            );
+          } catch (createErr) {
+            console.error("❌ Failed to create SAF file:", createErr);
+            showToast(
+              'error',
+              translate('errorPDF'),
+              'Nepavyko sukurti PDF faile. Bandykite dar kartą.'
+            );
+            return;
+          }
+          
 
           await FileSystem.writeAsStringAsync(fileUri, base64Data, {
             encoding: FileSystem.EncodingType.Base64,
